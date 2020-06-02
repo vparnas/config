@@ -1,0 +1,12 @@
+#color listnormal cyan default
+color listfocus black yellow standout bold
+color listnormal_unread blue default
+color listfocus_unread yellow default bold
+color info yellow black bold
+color article white default
+
+highlight article "^(Feed|Link|Date):.*" blue default
+highlight article "^Author:.*" magenta default bold
+highlight article "^Title:.*" cyan default bold
+#highlight article "https?://[^ ]+" yellow default bold
+

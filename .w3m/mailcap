@@ -1,0 +1,6 @@
+text/plain; vim %s ;
+image/*; sxiv %s; test=test -n "$DISPLAY"
+image/*; xdg-open %s; 
+video/*; setsid nohup mpv --quiet %s & disown;
+application/pdf; mupdf '%s'; test=test -n "$DISPLAY"
+application/pdf; xdg-open '%s';

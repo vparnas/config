@@ -1,0 +1,326 @@
+color desert
+
+" General Settings
+set confirm
+set nonumber " Don't display line numbers
+set hidden " Unloaded buffers remain in memory, with all unsaved changes
+set scrolloff=0 " Don't enforce any visible lines beyond cursor position
+
+" Map <space> as leader instead of the default backslash
+" nnoremap <SPACE> <Nop>
+let mapleader=" "
+
+" ======= Language settings =========
+" Configure keymap, disable by default. 
+" use <CTRL-6> or <CTRL-^> in insert/search/cmd mode to toggle
+set keymap=russian-yawerty
+set iminsert=0 
+set imsearch=-1
+
+" ======= Search ========
+set hlsearch " highlight search pattern. :noh[lsearch] to disable until next search
+set ignorecase " case insensitive regular expressions
+set smartcase " overwrite ignorecase when uppercase characters are present
+set incsearch " Automatically jump to search term
+set infercase " adjust case of a keyword completion match (local to buffer)
+" Use <C-L> to clear the highlighting of :set hlsearch.
+if maparg('<C-L>', 'n') ==# ''
+    nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+endif
+
+" Disables automatic commenting on newline:
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+" Custom highlight group (must load for specific buffers)
+" highlight MyGroup ctermbg=DarkYellow guibg=DarkYellow guifg=Black ctermfg=Black
+autocmd Filetype * match Todo /TODO\|NOTE/
+
+set wildmenu " Enable smart command line completion on <Tab>
+set wildmode=full
+set wildcharm=<C-z>
+
+"" Import the GUI menu into console mode
+"source $VIMRUNTIME/menu.vim
+"set cpo-=<
+"map <C-m> :emenu <C-Z>
+
+set startofline " When moving to top/middle/bottom (H/M/L) cursor at col 1
+set autoindent " new line indent is obtained from the previous line
+" set smartindent " similar to above, but for C programs, or:
+" set cindent 
+set wrap
+set linebreak " line breaks at words, not characters
+set breakindent
+set foldmethod=marker
+" Do not display the blue status bar regardless of number of windows open
+set laststatus=0
+" Show the tabline by default for >1 tabs
+set showtabline=1
+" set noruler
+
+" To insert a real tab when 'expandtab' is on, use CTRL-V<Tab>.
+" Use :retab to fix existing tabs
+set tabstop=4 shiftwidth=4 expandtab
+filetype plugin on
+syntax on
+
+" split and vsplit commands split open at the bottom and right 
+set splitbelow splitright
+
+" Load all available scripts
+:runtime! scripts/*.vim
+
+" ========== Button mappings ============
+" Common files
+nnoremap <leader>= :e $MYVIMRC<cr>
+nnoremap ,N :e + $NOTES<cr>
+nmap ,T :e $TAGS_GLOBAL<CR>
+
+" Tag settings 
+if empty($TAGS_GLOBAL)
+    let $TAGS_GLOBAL=$XDG_CONFIG_HOME . '/tags.global'
+endif
+set tags+=$TAGS_GLOBAL
+" Remap CTRL+] to use 'tjump' instead of 'tag'
+map <C-]> :tjump<space><C-R><C-w><CR>
+nmap ,t yiw:call AddTag('<C-R>"')<CR>
+vmap ,t y:call AddTag('<C-R>"')<CR>
+nmap ;tp :tprev<CR>
+nmap ;tn :tnext<CR>
+nmap ;tf :tfirst<CR>
+nmap ;tl :tlast<CR>
+
+nmap <F1> :bprevious<CR>
+nmap <F2> :bnext<CR>
+" Switch the current and next word
+nmap <F3> <Esc>:s/\v(<\k*%#\k*>)(\_.{-})(<\k+>)/\3\2\1/<CR>``
+" List browse mode for navigating among indented lists similar to a file manager navigating directory structure. Requires scripts/listbrowse.vim
+nmap <F4> :call ToggleListMode()<CR>
+" 'Compile' present document using makeprg
+nmap <F5> :make!<CR>
+" Toggle spell-check (:spellinfo to see currently enabled dictionaries)
+nmap <F6> :setlocal spell!<CR>
+" Fill in the desired lang (en,es,pt,pl,ru,...) and press enter
+nmap <F7> :setlocal spelllang=
+" Toggle relative numbering
+nmap <F9> :setlocal relativenumber!<CR>
+
+" To avoid specific insert-mode abbreviation with mode enabled, type <C-V> right before <space> that would trigger the abbreviation.
+" note: expandtab gets disabled when paste mode is off, hence reset
+nmap <F10> :echo "toggling abbreviations (and paste mode)" \| setlocal paste! \| setlocal expandtab <CR>
+
+nmap <Leader>1 <F1>
+nmap <Leader>2 <F2>
+nmap <Leader>3 <F3>
+nmap <Leader>4 <F4>
+nmap <Leader>5 <F5>
+nmap <Leader>6 <F6>
+nmap <Leader>7 <F7>
+nmap <Leader>8 <F8>
+nmap <Leader>9 <F9>
+nmap <Leader>0 <F10>
+
+" Move lines (or entire visual blocks) with Ctrl+j/k keys (Alt mappings don't work)
+nnoremap <C-j> :m+<CR>==
+nnoremap <C-k> :m-2<CR>==
+inoremap <C-j> <Esc>:m+<CR>==gi
+inoremap <C-k> <Esc>:m-2<CR>==gi
+vnoremap <C-j> :m'>+<CR>gv=gv
+vnoremap <C-k> :m-2<CR>gv=gv
+
+"========== Navigation related  ==========
+" Buffer navigation commands
+" Easier shortcut to jump to alternate (last '#') file, also <C-^> 
+nmap <leader><space> :b#<cr>
+nmap <BS> :b#<cr>
+" List all buffers and offer selection or buffer operation by number/name
+nmap <leader>l :ls<CR>:b
+" Toggle the buffer hidden mode globally
+nmap <leader>H :set hidden!<CR>
+" - delete current buffer and display previous buffer in its window
+nmap <leader>dd :b#<CR>:bdelete #<CR>
+" Views a list of buffers in tab completion, presuming <C-z> is the *wildcharm*
+nnoremap <leader>b :buffer <C-z><S-Tab>
+nnoremap <leader>B :sbuffer <C-z><S-Tab>
+
+" Find friendly settings
+set path=.,**
+nnoremap <leader>f :find *
+nnoremap <leader>s :sfind *
+
+" Useful one-finger navigation
+nmap - <pageup>
+nmap <down> <pagedown>
+nmap = <pagedown>
+nmap + <pagedown>
+nmap <up> <pageup>
+nmap <left> :tabprevious<CR>
+nmap <right> :tabnext<CR>
+" nmap <del> :tabnext<CR>
+
+" Tab navigation
+nnoremap tn :tabnew<CR>
+nnoremap tl :tabnext<CR>
+nnoremap th :tabprevious<CR>
+nnoremap t[ :tabm-<CR>
+nnoremap t] :tabm+<CR>
+nnoremap t0 :tabn 1<CR>
+nnoremap t$ :tabn $<CR>
+nnoremap to :tabonly<CR>
+" To split all buffers within one tab use :sba or :vert sba
+" <C-w>T will move the current window to a new tab page.
+nnoremap <leader>- :call ToggleTabLine()<cr>
+
+" Open buffer or selection as a suckless sent presentation
+map ,s :w !sent<CR>
+
+" Pipe buffer content to the jrnl app
+map ,j :w !jrnl
+
+" Select a link for copy or open with an application 
+map ,l :silent w !linkgrabber
+
+" Append the line or selection to the notes file in env $NOTES
+nmap ,n :.w! >> $NOTES \| echo "Line written to notes"<CR>
+vmap ,n :w! >> $NOTES \| echo "Selection written to notes"<CR>
+
+" Format buffer or selection to fixed width (ie for email)
+nmap ,f :%!fmt -78
+vmap ,f :!fmt -78
+
+" view the diff/gitdiff between buffer and respective file on disk
+nmap ,d :w !diff -u % -<CR>
+nmap ,gd :silent w !git diff % <CR>
+
+" Make a backup of the file on disk
+nmap ,b :!cp -av % %.bak<CR>
+
+" Email the buffer or selection via mutt
+map ,e :w !mutt <address>
+
+" Convert current or selected comma-separated list to vertical
+map ,C :s/,\s\?/\r/g<CR>
+
+" Force a limited width soft-wrapping
+nmap <C-w>m :set columns=80<CR>
+
+" ==== More search settings ====
+" Lay out the replace-all template
+nnoremap S :%s//gc<Left><Left><Left>
+" vimgrep command template
+nnoremap <C-s> :vimgrep //g %<C-Left><C-Left><Right>
+" vimgrep template to search through all buffers and append to error list
+nnoremap <C-S> :silent bufdo vimgrepadd //g %<C-Left><C-Left><Right>
+" search list (what is technically the 'error' list) shortcuts
+nnoremap ;n :cnext<CR>
+nnoremap ;p :cprev<CR>
+nnoremap ;o :copen 6<CR>
+nnoremap ;N :silent cnewer<CR>
+nnoremap ;P :silent colder<CR>
+" Start a new, clear clist
+nnoremap ;C :cexpr []<CR>
+" TODO: prepend vimgrep with :noautocmd for speedup
+
+" Move lines matching pattern to below current line 
+nnoremap ,m :g//m''<Left><Left><Left><Left>
+
+" ==== Spelling ====
+" Apply the first spelling correction
+nmap <leader>z 1z=
+nmap ZA :spellrepall<CR>
+
+" Copy selected text to system clipboard (requires gvim installed):
+" vnoremap <C-c> "+y
+
+" TMUX buffer integration
+" Copy entire-line selection to tmux buffer. 
+vmap <C-c> :w !tmux load-buffer -<cr>
+" Cut text from selection to tmux buffer. Hit undo to return.
+vmap <C-x> :!tmux load-buffer -<cr>
+" Paste from tmux buffer
+nmap <leader>p :r !tmux show-buffer<cr>
+nmap <leader>P :.-1r !tmux show-buffer<cr>
+
+" Save a few keystrokes for capitalizing or lower-casing words
+nnoremap ;U gUiw
+nnoremap ;u guiw
+" Switch case of the first letter of word
+nmap ;c gew~b
+imap ;c <ESC>gew~`^i<Right>
+
+" Emphasize the current word or selected text with asterisks
+nnoremap ;e :call SurroundWordWithCharacter("*")<CR>
+inoremap ;e <ESC>:call SurroundWordWithCharacter("*")<CR>a
+vnoremap ;e <ESC>:call SurroundVisualWithCharacter("*")<CR>
+" Bold the text 
+nnoremap ;b :call SurroundWordWithCharacter("**")<CR>
+inoremap ;b <ESC>:call SurroundWordWithCharacter("**")<CR>a
+vnoremap ;b <ESC>:call SurroundVisualWithCharacter("**")<CR>
+" Strike out the text 
+nnoremap ;s :call SurroundWordWithCharacter("~~")<CR>
+inoremap ;s <ESC>:call SurroundWordWithCharacter("~~")<CR>a
+vnoremap ;s <ESC>:call SurroundVisualWithCharacter("~~")<CR>
+" Single quotes around text
+nnoremap ;' :call SurroundWordWithCharacter("'")<CR>
+inoremap ;' <ESC>:call SurroundWordWithCharacter("'")<CR>a
+vnoremap ;' <ESC>:call SurroundVisualWithCharacter("'")<CR>
+" Double quotes around text
+nnoremap ;" :call SurroundWordWithCharacter('"')<CR>
+inoremap ;" <ESC>:call SurroundWordWithCharacter('"')<CR>a
+vnoremap ;" <ESC>:call SurroundVisualWithCharacter('"')<CR>
+" ` around text
+nnoremap ;` :call SurroundWordWithCharacter('`')<CR>
+inoremap ;` <ESC>:call SurroundWordWithCharacter('`')<CR>a
+vnoremap ;` <ESC>:call SurroundVisualWithCharacter('`')<CR>
+
+" Navigating with guides (<++>) - jump to the next appearance of this construct
+map ;<Tab> <Esc>/<++><Enter>"_c4l
+inoremap ;<Tab> <Esc>/<++><Enter>"_c4l
+
+" Insert a plain text section divider
+nmap ,D O<Esc>10i=<Esc>a<Space><++><Space><Esc>10a=<Esc>0
+
+nmap <leader>n :call RenameFile()<cr>
+
+" =======================================================
+" ========== Specific buffer settings ===================
+" =======================================================
+au BufNewFile,BufRead *.grxml setfiletype xml
+au BufNewFile,BufRead *.asy setlocal filetype=c makeprg=asy\ % autowrite
+au BufNewFile,BufRead *.tex setlocal makeprg=pdflatex\ % autowrite
+autocmd! BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
+autocmd! BufNewFile,BufRead *.cir setlocal ft=spice
+autocmd FileType picolisp setlocal expandtab tabstop=3 shiftwidth=3 autoindent nosmartindent shellpipe= makeprg=pil\ %\ +
+autocmd BufRead,BufNewFile calcurse*,*calcurse/notes/* set filetype=markdown
+autocmd BufRead,BufNewFile jrnl*,*/journals/* set filetype=markdown
+autocmd BufRead,BufNewFile tags* set filetype=tags noexpandtab
+autocmd BufRead,BufNewFile *.csv setf csv
+autocmd BufRead,BufNewFile calendar setlocal tabstop=16 shiftwidth=16 noexpandtab
+au BufRead /tmp/mutt-* set textwidth=72
+autocmd BufRead,BufNewFile jrnl* if getfsize(expand(@%)) == 0 | execute '1 !echo $JRNL_HEADER' | endif
+" Disabled perl file includes to speedup curr buffer include file searches
+autocmd FileType perl setlocal include=''
+" When alias file updated, regenerate the underlying bash shortcuts
+autocmd BufWritePost .aliases !alias-gen %
+" Upon updating the shorthand/speedword list, convert it to the vim abbreviation format
+autocmd BufWritePost shorthand.txt silent !sed -r '/^(\#|\s*$)/d; s/\s*\#.*//; s/^(\S+)\s+([^,;]+).*/iab \1 \2/' % > ~/.vim/scripts/abbrev.vim
+" Update binds when sxhkdrc is updated.
+autocmd BufWritePost *sxhkdrc !pkill -USR1 sxhkd
+
+" ===========================
+" MRU (Most Recently Used plugin)
+" ===========================
+let MRU_File = $HOME . '/.vim/vim_mru_files'
+let MRU_Max_Entries = 20
+let MRU_Exclude_Files = '^/tmp/.*'
+
+" ===========================
+" markdown plugin https://github.com/plasticboy/vim-markdown
+" ===========================
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_folding_level = 1
+let g:vim_markdown_no_default_key_mappings = 0
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_follow_anchor = 1
+let g:vim_markdown_auto_insert_bullets = 1
+let g:vim_markdown_new_list_item_indent = 0

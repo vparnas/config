@@ -1,0 +1,95 @@
+# https://github.com/baskerville/sxhkd
+
+super + Return
+	$TERMINAL
+
+# Large-font terminal and respective applications
+super + {shift + Return, i}
+    $TERMINAL -f 'Liberation Mono:pixelsize=36:antialias=false:autohint=false' -g '50x18' -c 'terminal_large' \
+    {_, watch -t -n 4 status-mon -A}
+
+super + d
+	dmenu_run
+#super + shift + p
+#    lisp rlwrap sbcl --noinform
+super + {a,r,s,y,n}
+    $TERMINAL_PERSIST {\
+    math R -q,\
+    file_manager nnn,\
+    scratch,\
+    calendar calcurse,\
+    rss newsboat,\
+    }
+# Email client
+{super + e,XF86Mail}
+    $TERMINAL_PERSIST email mutt
+# Screen key display toggle
+super + {shift + s,Scroll_Lock}
+	killall screenkey || screenkey
+
+# Audio
+{super + shift + a,XF86Tools}
+    $TERMINAL_PERSIST audio audio_control on
+{super + p,XF86AudioPlay}
+    audio_control pause
+super + {shift + p,XF86AudioPlay}
+    audio_control spotify_play
+{super + equal,super + plus,XF86AudioRaiseVolume}
+    audio_control up
+{super + minus,XF86AudioLowerVolume}
+    audio_control down
+XF86Audio{Next,Prev,Mute}
+    audio_control {next,prev,mute}
+super + {_,shift+}{period,comma}
+    audio_control {_,spotify_}{next,prev}
+super + XF86Audio{Next,Prev}
+    audio_control spotify_{next,prev}
+# Seek foward/back in song
+super + shift + bracket{right,left}
+	audio_control {forward,back}
+
+# Recording
+# Take screenshot
+Print
+    scrot -e 'mv $f ~/screenshots/ 2>/dev/null'
+# Record audio or video
+super + Print
+	dmenurecord
+# kill active recording
+super + Delete
+    killrecording
+
+# Misc
+#XF86MonBrightness{Up,Down}
+#    xbacklight -{inc,dec} 15
+# The chord is NOT abandoned until <esc> hit
+super + z : ctrl + {1-3} 
+    xdotool sleep .5 getactivewindow type --delay 150 {\
+        "echo 'привет'",\
+        "this is a test",\
+        "reply"\
+        } && xdotool key Return & 
+
+# Countdown
+super + ctrl + t
+    echo -e "60\n120\n180" | dmenu -p "Enter time: " | xargs \
+    $TERMINAL -f 'Liberation Mono:pixelsize=72:antialias=false:autohint=false' countdown 
+
+# Select one of the Most-Recently-Used files in dmenu to open in editor
+super + o
+    file=$(sed '1d' ~/.vim/vim_mru_files | dmenu -l 20 -fn 'Liberation Mono:pixelsize=25') && $TERMINAL $EDITOR $file
+
+{super + x,XF86ScreenSaver}
+    slock
+# Open browser, optionally with the search engine page
+{super + w,XF86HomePage}
+    $TERMINAL_PERSIST web w3m -B
+super + shift + {t,e}
+    exec-cmd jrnl_time_{start,end}
+# Display camera video feed
+super + shift + v
+    mpv --untimed /dev/video0 # --untimed eliminates the latency
+# Wifi network selection
+super + F5
+	$TERMINAL -e sudo wifi-menu
+

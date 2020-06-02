@@ -1,0 +1,19 @@
+set aaa_mode=all
+set continue=true
+#set mixer.alsa.channel=
+#set mixer.alsa.device=
+set mixer.pulse.restore_volume=1
+set output_plugin=pulse
+set play_library=false
+set play_sorted=false
+set repeat=false
+set repeat_current=false
+set resume=true
+set show_current_bitrate=true
+set show_hidden=true
+set show_remaining_time=false
+set shuffle=false
+set status_display_program=~/.config/cmus/cmus-status-display
+bind -f common ^U win-page-up
+bind -f common ^D win-page-down
+bind -f common R lqueue

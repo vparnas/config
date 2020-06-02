@@ -1,0 +1,55 @@
+# vim: set filetype=conf :
+
+confirm-exit yes
+show-keymap-hint no
+auto-reload no
+notify-xterm yes
+bookmark-autopilot yes
+
+# Three parameters appended to the below. 
+# > /dev/null to prevent a (benign) error from newsboat.
+# bookmark-cmd "jrnl @link >/dev/null"
+bookmark-cmd "$XDG_CONFIG_HOME/newsboat/bookmark.sh"
+
+#articlelist-title-format "%N %V - Articles in feed '%T (%u unread, %t total) - %U"
+articlelist-title-format "%N - '%T' (%u/%t) - %U"
+feedlist-title-format "%N - Your feeds (%u unread, %t total)%?T? - tag `%T&?"
+itemview-title-format "%N - '%T'"
+
+bind-key SPACE open
+bind-key j down
+bind-key k up
+bind-key j next articlelist
+bind-key k prev articlelist
+bind-key J next-feed articlelist
+bind-key K prev-feed articlelist
+bind-key n next-unread
+bind-key ^t next-unread
+bind-key N prev-unread
+bind-key G end
+bind-key g home
+bind-key d pagedown
+bind-key = pagedown
+bind-key u pageup
+bind-key - pageup
+bind-key l open
+bind-key a toggle-article-read
+bind-key D pb-download
+bind-key U show-urls
+bind-key x pb-delete
+
+unbind-key ^D
+
+include "colors/vitaly"
+
+browser "xdg-open"
+
+macro , open-in-browser
+macro w set browser "w3m"; open-in-browser ; set browser xdg-open
+macro c set browser "tmux load-buffer - <<<" ; open-in-browser ; set browser xdg-open
+macro n set browser "cat >> $NOTES <<<" ; open-in-browser ; set browser xdg-open
+
+#macro c set browser "xsel -b <<<" ; open-in-browser ; set browser xdg-open
+#macro a set browser "tsp youtube-dl --add-metadata -xic -f bestaudio/best"; open-in-browser ; set browser xdg-open
+#macro t set browser "tsp youtube-dl --add-metadata -ic"; open-in-browser ; set browser xdg-open
+#macro v set browser "setsid nohup mpv"; open-in-browser ; set browser xdg-open
