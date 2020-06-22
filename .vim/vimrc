@@ -83,6 +83,7 @@ endif
 set tags+=$TAGS_GLOBAL
 " Remap CTRL+] to use 'tjump' instead of 'tag'
 map <C-]> :tjump<space><C-R><C-w><CR>
+nmap <leader>t :tag<space>
 nmap ,t yiw:call AddTag('<C-R>"')<CR>
 vmap ,t y:call AddTag('<C-R>"')<CR>
 nmap ;tp :tprev<CR>
@@ -192,6 +193,9 @@ vmap ,f :!fmt -78
 nmap ,d :w !diff -u % -<CR>
 nmap ,gd :silent w !git diff % <CR>
 
+" Look up the current word via 'dict'
+nmap ;d :!dict <C-r><C-w><CR>
+
 " Make a backup of the file on disk
 nmap ,b :!cp -av % %.bak<CR>
 
@@ -202,7 +206,7 @@ map ,e :w !mutt <address>
 map ,C :s/,\s\?/\r/g<CR>
 
 " Force a limited width soft-wrapping
-nmap <C-w>m :set columns=80<CR>
+nmap <C-w>m :if &columns>80 \| set columns=80 \| endif<CR>
 
 " ==== More search settings ====
 " Lay out the replace-all template

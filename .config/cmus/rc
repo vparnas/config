@@ -1,19 +1,35 @@
-set aaa_mode=all
-set continue=true
-#set mixer.alsa.channel=
-#set mixer.alsa.device=
-set mixer.pulse.restore_volume=1
 set output_plugin=pulse
+set mixer.pulse.restore_volume=1
+
+# Auto-continue to the next track in library/playlist/queue
+set continue=true
+
+# all, artist or album playback, when play_library=true 
+set aaa_mode=album
+
+# Only play what's in the queue/playlist. 
 set play_library=false
 set play_sorted=false
+
+# Repeat album or current track, false by default
 set repeat=false
 set repeat_current=false
+
+# Upon reload, resume where left off
 set resume=true
+
 set show_current_bitrate=true
 set show_hidden=true
 set show_remaining_time=false
 set shuffle=false
 set status_display_program=~/.config/cmus/cmus-status-display
+
+# Enqueue a random album
+bind -f common R lqueue
+
+# Custom bindings
 bind -f common ^U win-page-up
 bind -f common ^D win-page-down
-bind -f common R lqueue
+
+#set mixer.alsa.channel=
+#set mixer.alsa.device=
