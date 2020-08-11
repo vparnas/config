@@ -35,6 +35,7 @@ function! RenameFile()
         exec ':bd ' . old_name
         redraw!
     endif
+    let @# = @%
 endfunction
 
 function! RemoveTrailingSpaces()

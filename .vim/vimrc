@@ -139,7 +139,7 @@ nmap <leader>l :ls<CR>:b
 " Toggle the buffer hidden mode globally
 nmap <leader>H :set hidden!<CR>
 " - delete current buffer and display previous buffer in its window
-nmap <leader>dd :b#<CR>:bdelete #<CR>
+nmap <leader>dd :b#<CR>:bdelete #<CR>:let @#=@%<CR>
 " Views a list of buffers in tab completion, presuming <C-z> is the *wildcharm*
 nnoremap <leader>b :buffer <C-z><S-Tab>
 nnoremap <leader>B :sbuffer <C-z><S-Tab>
@@ -296,10 +296,10 @@ autocmd! BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
 autocmd! BufNewFile,BufRead *.cir setlocal ft=spice
 autocmd FileType picolisp setlocal expandtab tabstop=3 shiftwidth=3 autoindent nosmartindent shellpipe= makeprg=pil\ %\ +
 autocmd BufRead,BufNewFile calcurse*,*calcurse/notes/* set filetype=markdown
-autocmd BufRead,BufNewFile jrnl*,*/journals/* set filetype=markdown
-autocmd BufRead,BufNewFile tags* set filetype=tags noexpandtab
+autocmd BufRead,BufNewFile jrnl*,*/journals/*.txt set filetype=markdown
+autocmd BufRead,BufNewFile tags* setlocal filetype=tags tabstop=8 shiftwidth=8 noexpandtab
 autocmd BufRead,BufNewFile *.csv setf csv
-autocmd BufRead,BufNewFile calendar setlocal tabstop=16 shiftwidth=16 noexpandtab
+autocmd BufRead,BufNewFile calendar* setlocal tabstop=16 shiftwidth=16 noexpandtab
 au BufRead /tmp/mutt-* set textwidth=72
 autocmd BufRead,BufNewFile jrnl* if getfsize(expand(@%)) == 0 | execute '1 !echo $JRNL_HEADER' | endif
 " Disabled perl file includes to speedup curr buffer include file searches
