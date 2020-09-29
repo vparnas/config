@@ -1,92 +1,115 @@
-color desert
+" General Settings {{{
 
-" General Settings
-set confirm
-set nonumber " Don't display line numbers
-set hidden " Unloaded buffers remain in memory, with all unsaved changes
-set scrolloff=0 " Don't enforce any visible lines beyond cursor position
+set confirm         " confirm on quit, etc.
+set nonumber        " Don't display line numbers
+set hidden          " Unloaded buffers remain in memory, with all unsaved changes
+set scrolloff=0     " Don't enforce any visible lines beyond cursor position
+set showbreak=↪     " better line wraps
+set autoindent      " new line indent is obtained from the previous line
+set history=100     " commands to store in search history
 
-" Map <space> as leader instead of the default backslash
-" nnoremap <SPACE> <Nop>
-let mapleader=" "
+" Tab related
+" To insert a real tab when 'expandtab' is on, use CTRL-V<Tab>.
+" Use :retab to fix existing tabs
+set tabstop=4 shiftwidth=4 expandtab
+set shiftround      " round indent to multiple of 'shiftwidth'
 
-" ======= Language settings =========
-" Configure keymap, disable by default. 
-" use <CTRL-6> or <CTRL-^> in insert/search/cmd mode to toggle
-set keymap=russian-yawerty
-set iminsert=0 
-set imsearch=-1
+set startofline     " When moving to top/middle/bottom (H/M/L) cursor at col 1
+" set smartindent   " similar to above, but for C programs, or:
+" set cindent 
+set wrap            " Line wrap
+set linebreak       " line breaks at words, not characters
+set breakindent
 
-" ======= Search ========
-set hlsearch " highlight search pattern. :noh[lsearch] to disable until next search
-set ignorecase " case insensitive regular expressions
-set smartcase " overwrite ignorecase when uppercase characters are present
-set incsearch " Automatically jump to search term
-set infercase " adjust case of a keyword completion match (local to buffer)
-" Use <C-L> to clear the highlighting of :set hlsearch.
-if maparg('<C-L>', 'n') ==# ''
-    nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
-endif
+set foldmethod=marker
+set foldnestmax=3   " deepest fold is 3 levels
 
-" Disables automatic commenting on newline:
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+set laststatus=0    " Do not display the blue status bar regardless of number of windows open
+set showtabline=1   " Show the tabline by default for >1 tabs
+" set noruler
 
-" Custom highlight group (must load for specific buffers)
-" highlight MyGroup ctermbg=DarkYellow guibg=DarkYellow guifg=Black ctermfg=Black
-autocmd Filetype * match Todo /TODO\|NOTE/
-
-set wildmenu " Enable smart command line completion on <Tab>
+set wildmenu        " enable ctrl-n and ctrl-p to scroll thru matches
 set wildmode=full
 set wildcharm=<C-z>
+set wildignorecase  " tab-complete file names regardless of case
+set wildignore+=*.o,*.obj,*~,*.png,*.gif,*.jpg,*.jpeg,*.zip,*.jar,*.pyc
+" set wildignore+=*/tmp/* " if enabled, also prevents any /tmp/ autocommands
+		
+set list            " display the below characters
+set listchars=tab:»\ ,trail:·,nbsp:·
 
 "" Import the GUI menu into console mode
 "source $VIMRUNTIME/menu.vim
 "set cpo-=<
 "map <C-m> :emenu <C-Z>
 
-set startofline " When moving to top/middle/bottom (H/M/L) cursor at col 1
-set autoindent " new line indent is obtained from the previous line
-" set smartindent " similar to above, but for C programs, or:
-" set cindent 
-set wrap
-set linebreak " line breaks at words, not characters
-set breakindent
-set foldmethod=marker
-" Do not display the blue status bar regardless of number of windows open
-set laststatus=0
-" Show the tabline by default for >1 tabs
-set showtabline=1
-" set noruler
+set splitbelow splitright   " better splitting
 
-" To insert a real tab when 'expandtab' is on, use CTRL-V<Tab>.
-" Use :retab to fix existing tabs
-set tabstop=4 shiftwidth=4 expandtab
+" Language related
+" Configure keymap, disable by default. 
+" use <CTRL-6> or <CTRL-^> in insert/search/cmd mode to toggle
+set keymap=russian-yawerty
+set iminsert=0 
+set imsearch=-1
+
+" Search related
+set hlsearch    " highlight search pattern. :noh[lsearch] to disable until next search
+set ignorecase  " case insensitive regular expressions
+set smartcase   " overwrite ignorecase when uppercase characters are present
+set incsearch   " Automatically jump to search term
+set infercase   " adjust case of a keyword completion match (local to buffer)
+" Use <C-L> to clear the highlighting of :set hlsearch.
+if maparg('<C-L>', 'n') ==# ''
+    nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+endif
+
+" set colorcolumn=80  " show right margin
+
 filetype plugin on
+
+" Colorization
 syntax on
+set background=dark
+color desert
 
-" split and vsplit commands split open at the bottom and right 
-set splitbelow splitright
+" }}}
 
-" Load all available scripts
-:runtime! scripts/*.vim
+" Key mappings {{{
 
-" ========== Button mappings ============
+" Map <space> as leader instead of the default backslash
+let mapleader=" "
+
+" Y behaves copies from the cursor to EOL
+noremap Y y$
+
+noremap j gj
+noremap k gk
+
+" Preserve selection when indenting
+vmap > >gv
+vmap < <gv
+
 " Common files
-nnoremap <leader>= :e $MYVIMRC<cr>
+nnoremap <leader>. :e $MYVIMRC<cr>
 nnoremap ,N :e + $NOTES<cr>
 nmap ,T :e $TAGS_GLOBAL<CR>
 
-" Tag settings 
+" change inside | | and / /
+nnoremap ci\| T\|ct\|
+nnoremap ci/ T/ct/
+
+" Tag mappings 
 if empty($TAGS_GLOBAL)
     let $TAGS_GLOBAL=$XDG_CONFIG_HOME . '/tags.global'
 endif
 set tags+=$TAGS_GLOBAL
 " Remap CTRL+] to use 'tjump' instead of 'tag'
-map <C-]> :tjump<space><C-R><C-w><CR>
+" map <C-]> :tjump<space><C-R><C-w><CR>
 nmap <leader>t :tag<space>
 nmap ,t yiw:call AddTag('<C-R>"')<CR>
 vmap ,t y:call AddTag('<C-R>"')<CR>
 nmap ;tp :tprev<CR>
+nmap <C-\> :tnext<CR>
 nmap ;tn :tnext<CR>
 nmap ;tf :tfirst<CR>
 nmap ;tl :tlast<CR>
@@ -95,7 +118,8 @@ nmap <F1> :bprevious<CR>
 nmap <F2> :bnext<CR>
 " Switch the current and next word
 nmap <F3> <Esc>:s/\v(<\k*%#\k*>)(\_.{-})(<\k+>)/\3\2\1/<CR>``
-" List browse mode for navigating among indented lists similar to a file manager navigating directory structure. Requires scripts/listbrowse.vim
+" List browse mode for navigating among indented lists similar to a 
+" file manager navigating directory structure. Requires scripts/listbrowse.vim
 nmap <F4> :call ToggleListMode()<CR>
 " 'Compile' present document using makeprg
 nmap <F5> :make!<CR>
@@ -106,9 +130,11 @@ nmap <F7> :setlocal spelllang=
 " Toggle relative numbering
 nmap <F9> :setlocal relativenumber!<CR>
 
-" To avoid specific insert-mode abbreviation with mode enabled, type <C-V> right before <space> that would trigger the abbreviation.
-" note: expandtab gets disabled when paste mode is off, hence reset
-nmap <F10> :echo "toggling abbreviations (and paste mode)" \| setlocal paste! \| setlocal expandtab <CR>
+" To avoid specific insert-mode abbreviation with mode enabled, 
+" type <C-V> right before <space> that would trigger the abbreviation.
+" note: expandtab gets disabled with paste mode on
+" nmap <F10> :echo "toggling abbreviations (and paste mode)" \| setlocal paste! \| setlocal expandtab <CR>
+set pastetoggle=<F10>   " toggle paste mode for normal and insert modes
 
 nmap <Leader>1 <F1>
 nmap <Leader>2 <F2>
@@ -129,7 +155,7 @@ inoremap <C-k> <Esc>:m-2<CR>==gi
 vnoremap <C-j> :m'>+<CR>gv=gv
 vnoremap <C-k> :m-2<CR>gv=gv
 
-"========== Navigation related  ==========
+" Navigation related 
 " Buffer navigation commands
 " Easier shortcut to jump to alternate (last '#') file, also <C-^> 
 nmap <leader><space> :b#<cr>
@@ -147,7 +173,6 @@ nnoremap <leader>B :sbuffer <C-z><S-Tab>
 " Find friendly settings
 set path=.,**
 nnoremap <leader>f :find *
-nnoremap <leader>s :sfind *
 
 " Useful one-finger navigation
 nmap - <pageup>
@@ -202,19 +227,20 @@ nmap ,b :!cp -av % %.bak<CR>
 " Email the buffer or selection via mutt
 map ,e :w !mutt <address>
 
-" Convert current or selected comma-separated list to vertical
-map ,C :s/,\s\?/\r/g<CR>
+" Convert current or selected comma/semicolon-separated list to vertical
+map ,C :s/[,;]\s*/\r/g<CR>
 
 " Force a limited width soft-wrapping
 nmap <C-w>m :if &columns>80 \| set columns=80 \| endif<CR>
 
-" ==== More search settings ====
+" More search mappings
 " Lay out the replace-all template
-nnoremap S :%s//gc<Left><Left><Left>
+nnoremap S :%s/\v/gc<left><left><left>
+vnoremap S :s/\v/g<left><left>
 " vimgrep command template
-nnoremap <C-s> :vimgrep //g %<C-Left><C-Left><Right>
+nnoremap <leader>s :vimgrep //g %<C-Left><C-Left><Right>
 " vimgrep template to search through all buffers and append to error list
-nnoremap <C-S> :silent bufdo vimgrepadd //g %<C-Left><C-Left><Right>
+nnoremap <C-s> :silent bufdo vimgrepadd //g %<C-Left><C-Left><Right>
 " search list (what is technically the 'error' list) shortcuts
 nnoremap ;n :cnext<CR>
 nnoremap ;p :cprev<CR>
@@ -228,7 +254,7 @@ nnoremap ;C :cexpr []<CR>
 " Move lines matching pattern to below current line 
 nnoremap ,m :g//m''<Left><Left><Left><Left>
 
-" ==== Spelling ====
+" Spelling 
 " Apply the first spelling correction
 nmap <leader>z 1z=
 nmap ZA :spellrepall<CR>
@@ -286,41 +312,64 @@ nmap ,D O<Esc>10i=<Esc>a<Space><++><Space><Esc>10a=<Esc>0
 
 nmap <leader>n :call RenameFile()<cr>
 
-" =======================================================
-" ========== Specific buffer settings ===================
-" =======================================================
+" }}}
+
+" Autocommands {{{
+
+" Disables automatic commenting on newline:
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+" Custom highlight group
+au Filetype * highlight MyHighlights ctermbg=DarkYellow guibg=DarkYellow guifg=Black ctermfg=Black
+au Filetype * match MyHighlights /TODO\|NOTE/
+" Highlight characters beyond 80
+" au Filetype * highlight rightMargin term=bold ctermfg=red guifg=red
+" au Filetype * 2match rightMargin /.\%>80v/
+
+autocmd FileType gitcommit setlocal spell
+au FileType picolisp setlocal expandtab tabstop=3 shiftwidth=3 autoindent nosmartindent shellpipe= makeprg=pil\ %\ +
+
+" Disabled perl file includes to speedup curr buffer include file searches
+au FileType perl setlocal include=''
+
 au BufNewFile,BufRead *.grxml setfiletype xml
 au BufNewFile,BufRead *.asy setlocal filetype=c makeprg=asy\ % autowrite
 au BufNewFile,BufRead *.tex setlocal makeprg=pdflatex\ % autowrite
-autocmd! BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
-autocmd! BufNewFile,BufRead *.cir setlocal ft=spice
-autocmd FileType picolisp setlocal expandtab tabstop=3 shiftwidth=3 autoindent nosmartindent shellpipe= makeprg=pil\ %\ +
-autocmd BufRead,BufNewFile calcurse*,*calcurse/notes/* set filetype=markdown
-autocmd BufRead,BufNewFile jrnl*,*/journals/*.txt set filetype=markdown
-autocmd BufRead,BufNewFile tags* setlocal filetype=tags tabstop=8 shiftwidth=8 noexpandtab
-autocmd BufRead,BufNewFile *.csv setf csv
-autocmd BufRead,BufNewFile calendar* setlocal tabstop=16 shiftwidth=16 noexpandtab
+au BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
+au BufNewFile,BufRead *.cir setlocal ft=spice
+au BufNewFile,BufRead calcurse*,*calcurse/notes/* set filetype=markdown
+au BufNewFile,BufRead */tmp/jrnl*,*/journals/*.txt set filetype=markdown
+au BufNewFile,BufRead tags* setlocal filetype=tags tabstop=8 shiftwidth=8 noexpandtab
+au BufNewFile,BufRead *.csv setf csv
+au BufNewFile,BufRead calendar* setlocal tabstop=16 shiftwidth=16 noexpandtab
+au BufNewFile,BufRead jrnl* 
+    \ if getfsize(expand(@%)) == 0 | 
+        \ execute '1 !echo $JRNL_HEADER' | 
+    \ endif
 au BufRead /tmp/mutt-* set textwidth=72
-autocmd BufRead,BufNewFile jrnl* if getfsize(expand(@%)) == 0 | execute '1 !echo $JRNL_HEADER' | endif
-" Disabled perl file includes to speedup curr buffer include file searches
-autocmd FileType perl setlocal include=''
-" When alias file updated, regenerate the underlying bash shortcuts
-autocmd BufWritePost .aliases !alias-gen %
-" Upon updating the shorthand/speedword list, convert it to the vim abbreviation format
-autocmd BufWritePost shorthand.txt silent !sed -r '/^(\#|\s*$)/d; s/\s*\#.*//; s/^(\S+)\s+([^,;]+).*/iab \1 \2/' % > ~/.vim/scripts/abbrev.vim
-" Update binds when sxhkdrc is updated.
-autocmd BufWritePost *sxhkdrc !pkill -USR1 sxhkd
 
-" ===========================
+" When alias file updated, regenerate the underlying bash shortcuts
+au BufWritePost .aliases !alias-gen %
+
+" If shorthand list updated, convert to the vim abbreviation format
+au BufWritePost shorthand.txt silent !sed -r '/^(\#|\s*$)/d; s/\s*\#.*//; s/^(\S+)\s+([^,;]+).*/iab \1 \2/' % > ~/.vim/scripts/abbrev.vim
+
+" Update binds when sxhkdrc is updated.
+au BufWritePost *sxhkdrc !pkill -USR1 sxhkd
+
+" }}}
+
+" External script and plugin settings {{{
+
+" Load all available scripts
+:runtime! scripts/*.vim
+
 " MRU (Most Recently Used plugin)
-" ===========================
 let MRU_File = $HOME . '/.vim/vim_mru_files'
 let MRU_Max_Entries = 20
 let MRU_Exclude_Files = '^/tmp/.*'
 
-" ===========================
 " markdown plugin https://github.com/plasticboy/vim-markdown
-" ===========================
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_folding_level = 1
 let g:vim_markdown_no_default_key_mappings = 0
@@ -328,3 +377,5 @@ let g:vim_markdown_conceal = 0
 let g:vim_markdown_follow_anchor = 1
 let g:vim_markdown_auto_insert_bullets = 1
 let g:vim_markdown_new_list_item_indent = 0
+
+" }}}
