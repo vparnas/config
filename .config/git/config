@@ -1,0 +1,70 @@
+; Inspired by https://github.com/sickill/dotfiles/blob/master/.gitconfig
+
+[user]
+    name = Vitaly Parnas
+    email = vp330@parnas.me
+
+[core]
+    excludesfile = ~/.git.ignore
+    attributesfile = ~/.git.attributes
+    editor = vim -c startinsert
+    pager = less -F
+
+[pull]
+    rebase = true
+
+[push]
+    default = upstream
+
+[diff]
+    tool = vimdiff
+
+[url "git@github.com:"]
+    insteadOf = "gh:"
+    pushInsteadOf = "https://github.com/"
+    pushInsteadOf = "http://github.com/"
+    pushInsteadOf = "git://github.com/"
+    pushInsteadOf = "gh:"
+
+[url "git@github.com:vparnas/"]
+    insteadOf = "ghv:"
+    pushInsteadOf = "https://github.com/vparnas/"
+    pushInsteadOf = "http://github.com/vparnas/"
+    pushInsteadOf = "git://github.com/vparnas/"
+    pushInsteadOf = "ghs:"
+
+[alias]
+    a = add -v
+    br = branch
+    feature = checkout -b
+    c = commit -v
+    ca = !git add -A && git commit -v
+    co = checkout
+    d = difftool
+    ds = diff --staged
+    dg = !sh -c 'git diff $(git status-grep $1)' -
+    dw = diff --color-words
+    ;fix = commit --amend -C HEAD
+    find = !sh -c 'git ls-files $2 | grep -i $1' -
+
+    # --oneline: short for "--pretty=oneline --abbrev-commit"
+    l = log --graph --oneline --decorate
+    l2 = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --abbrev-commit --date=iso
+    lp = log -p
+    last = log --decorate --numstat -1
+
+    r = reset
+    r1 = reset HEAD^
+    r2 = reset HEAD^^
+    rh = reset --hard
+    rh1 = reset HEAD^ --hard
+    rh2 = reset HEAD^^ --hard
+
+    sed = !sh -c 'git ls-files -z $2 | xargs -0 sed -i -e $1' -
+
+    s = status -sb
+    status-grep = !sh -c \"git status --porcelain | awk '{ print \\$2 }' | grep -i $1\" -
+
+    unstage = reset HEAD --
+
+    tags = tag -n1 -l
