@@ -5,8 +5,8 @@
     email = vp330@parnas.me
 
 [core]
-    excludesfile = ~/.git.ignore
-    attributesfile = ~/.git.attributes
+    excludesfile = ~/.config/git/ignore
+    attributesfile = ~/.config/git/attributes
     editor = vim -c startinsert
     pager = less -F
 

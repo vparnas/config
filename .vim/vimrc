@@ -339,13 +339,10 @@ au BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
 au BufNewFile,BufRead *.cir setlocal ft=spice
 au BufNewFile,BufRead calcurse*,*calcurse/notes/* set filetype=markdown
 au BufNewFile,BufRead */tmp/jrnl*,*/journals/*.txt set filetype=markdown
+au BufNewFile,BufRead jrnl-new* execute '1 !echo $JRNL_HEADER'
 au BufNewFile,BufRead tags* setlocal filetype=tags tabstop=8 shiftwidth=8 noexpandtab
 au BufNewFile,BufRead *.csv setf csv
 au BufNewFile,BufRead calendar* setlocal tabstop=16 shiftwidth=16 noexpandtab
-au BufNewFile,BufRead jrnl* 
-    \ if getfsize(expand(@%)) == 0 | 
-        \ execute '1 !echo $JRNL_HEADER' | 
-    \ endif
 au BufRead /tmp/mutt-* set textwidth=72
 
 " When alias file updated, regenerate the underlying bash shortcuts
@@ -356,6 +353,9 @@ au BufWritePost shorthand.txt silent !sed -r '/^(\#|\s*$)/d; s/\s*\#.*//; s/^(\S
 
 " Update binds when sxhkdrc is updated.
 au BufWritePost *sxhkdrc !pkill -USR1 sxhkd
+
+" load available skeleton for new file
+au BufNewFile *.* silent! execute '0r ~/.vim/templates/skeleton.'.expand("<afile>:e") | normal! G
 
 " }}}
 

@@ -1,6 +1,7 @@
 tabstop 8
 indent_incr 4
 pixel_per_char 11
+pixel_per_line 20
 frame 1
 target_self 0
 open_tab_blank 1
@@ -23,6 +24,12 @@ ignore_null_img_alt 1
 view_unseenobject 0
 display_image 0
 pseudo_inlines 1
+auto_image 1
+max_load_image 4
+ext_image_viewer 1
+image_scale 100
+imgdisplay w3mimgdisplay
+image_map_list 1
 fold_line 0
 show_lnum 0
 show_srch_str 1
@@ -71,6 +78,8 @@ urimethodmap ~/.w3m/urimethodmap, /etc/w3m/urimethodmap
 editor vim -c "set filetype=html"
 mailto_options 1
 mailer xdg-open mailto:%s
+
+# External browser settings
 extbrowser xdg-open %s &
 extbrowser2 opera %s &
 extbrowser3 url=%s out_file=$NOTES && echo @url $url >> $out_file && echo $url saved to $out_file && read s
