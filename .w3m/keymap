@@ -1,5 +1,3 @@
-# A modification of the original ~/.w3m/keymap to incorporate more VIM-like navigation
-#
 # Ctrl  : C-, ^
 # Escape: ESC-, M-, ^[
 # Space : SPC, ' '
@@ -10,196 +8,236 @@
 # Right : RIGHT, ^[[C
 # Left  : LEFT, ^[[D
 
-# Marks
-keymap	C-@	MARK
-keymap	M-m	MARK
-## Incredibly useful to mark all search terms
-keymap	\"	REG_MARK
-## Mark URL-like strings as anchors
-keymap	:	MARK_URL
-## Mark current word as URL
-keymap	";"	MARK_WORD
-keymap	M-:	MARK_MID
-keymap	M-.	NEXT_MARK
-keymap	M-,	PREV_MARK
+# Marks {{{
 
-# Navigation, links, tabs
-keymap	C-e	UP
-keymap	J	UP
-keymap	K	DOWN
-keymap	C-y	DOWN
-keymap	C-b	MOVE_LEFT
-keymap	h	MOVE_LEFT
-keymap	C-n	MOVE_DOWN
-keymap	j	MOVE_DOWN
-keymap	C-f	MOVE_RIGHT
-keymap	l	MOVE_RIGHT
-keymap	,	LEFT
-keymap	.	RIGHT
-keymap	M-<	SHIFT_LEFT
-keymap	M->	SHIFT_RIGHT
-keymap	C-p	MOVE_UP
-keymap	k	MOVE_UP
-keymap	W	PREV_WORD
-keymap	w	NEXT_WORD
-keymap	=	NEXT_PAGE
-keymap	+	NEXT_PAGE
-keymap  C-d NEXT_PAGE
-keymap	SPC	NEXT_PAGE
-keymap	C-v	NEXT_PAGE
-keymap	DOWN	NEXT_PAGE
-keymap	-	PREV_PAGE
-keymap	C-u	PREV_PAGE
-keymap	M-v	PREV_PAGE
-keymap	UP	PREV_PAGE
-keymap	M-C-u	NEXT_LEFT_UP
-keymap	M-C-h	NEXT_LEFT
-keymap	M-C-j	NEXT_DOWN
-keymap	M-C-k	NEXT_UP
-keymap  M-C-l   NEXT_RIGHT
-keymap	M-C-m	NEXT_RIGHT_DOWN
-keymap	TAB	    NEXT_LINK
-keymap	M-TAB	PREV_LINK
-keymap	[	LINK_BEGIN
-keymap	]	LINK_END
-keymap	Z	CENTER_H
-keymap	C-a	LINE_BEGIN
-keymap	0	LINE_BEGIN
-keymap	\^	LINE_BEGIN
-keymap	$	LINE_END
-keymap	b	BACK
-keymap	B	BACK
-keymap	C-r	ISEARCH_BACK
-keymap	C-s	ISEARCH
-keymap	/	SEARCH
-keymap	?	SEARCH_BACK
-keymap	N	SEARCH_PREV
-keymap	n	SEARCH_NEXT
-keymap	z	CENTER_V
-keymap	g	BEGIN
-keymap	G	END
-keymap	M-g	GOTO_LINE
-keymap	(	UNDO
-keymap	)	REDO
+keymap C-@  MARK
+keymap M-m  MARK
+# Mark all search terms
+keymap \"   REG_MARK
+# Mark URL-like strings as anchors
+keymap :    MARK_URL
+# Mark current word as URL
+keymap ";"  MARK_WORD
+keymap M-:  MARK_MID
+keymap M-.  NEXT_MARK
+keymap M-,  PREV_MARK
 
-# Tab operations
-keymap	{	    PREV_TAB
-keymap	LEFT	PREV_TAB
+# }}}
+
+# Navigation, links, tabs {{{
+
+# Scroll screen up one line
+keymap C-e  UP
+keymap J    UP
+# Scroll screen down one line
+keymap K    DOWN
+keymap C-y  DOWN
+# Scroll screen left
+keymap ,    LEFT
+# Scroll screen right
+keymap .    RIGHT
+keymap h    MOVE_LEFT
+keymap C-p  MOVE_UP
+keymap k    MOVE_UP
+keymap C-n  MOVE_DOWN
+keymap j    MOVE_DOWN
+keymap l    MOVE_RIGHT
+keymap M-<  SHIFT_LEFT
+keymap M->  SHIFT_RIGHT
+keymap W    PREV_WORD
+keymap b    PREV_WORD
+keymap w    NEXT_WORD
+keymap =    NEXT_PAGE
+keymap +    NEXT_PAGE
+keymap C-d  NEXT_PAGE
+keymap SPC  NEXT_PAGE
+keymap DOWN NEXT_PAGE
+keymap -    PREV_PAGE
+keymap C-u  PREV_PAGE
+keymap UP   PREV_PAGE
+keymap TAB  NEXT_LINK
+keymap M-TAB PREV_LINK
+# First link on page
+keymap [    LINK_BEGIN
+# Last link
+keymap ]    LINK_END
+keymap Z    CENTER_H
+keymap z    CENTER_V
+keymap C-a  LINE_BEGIN
+keymap 0    LINE_BEGIN
+keymap \^   LINE_BEGIN
+keymap $    LINE_END
+keymap g    BEGIN
+keymap G    END
+keymap (    UNDO
+keymap )    REDO
+keymap M-g  GOTO_LINE
+
+# }}}
+
+# Search {{{
+
+# Incremental search
+keymap C-r  ISEARCH_BACK
+keymap C-s  ISEARCH
+keymap /    SEARCH
+keymap ?    SEARCH_BACK
+keymap N    SEARCH_PREV
+keymap n    SEARCH_NEXT
+
+# }}}
+
+# Tab operations {{{
+
+keymap {        PREV_TAB
+keymap LEFT     PREV_TAB
 keymap DEL      PREV_TAB
-keymap	}	    NEXT_TAB
-keymap	RIGHT	NEXT_TAB
-keymap	\\	NEXT_TAB
-keymap  M-{ TAB_LEFT
-keymap  M-} TAB_RIGHT
-keymap	C-q	CLOSE_TAB
-keymap	C-w	CLOSE_TAB
-keymap	C-t	NEW_TAB
-keymap	M-t	TAB_MENU
+keymap }        NEXT_TAB
+keymap RIGHT    NEXT_TAB
+keymap \\       NEXT_TAB
+keymap M-{      TAB_LEFT
+keymap M-}      TAB_RIGHT
+keymap C-q      CLOSE_TAB
+keymap C-w      CLOSE_TAB
+keymap C-t      NEW_TAB
+keymap M-t      TAB_MENU
 
-# Links
-keymap	T	TAB_LINK
-keymap	t	TAB_LINK
-keymap	C-m	GOTO_LINK
-keymap	C-j	GOTO_LINK
-keymap	a	SAVE_LINK
-# Open current link in an external browser (application)
-keymap	o	EXTERN_LINK
-keymap	M-M	EXTERN_LINK
+# }}}
+
+# Links {{{
+
+# Open link in new tab
+keymap t    TAB_LINK
+keymap T    TAB_LINK
+keymap a    SAVE_LINK
+# Open current link in ext browser (application)
+keymap o    EXTERN_LINK
+keymap M-M  EXTERN_LINK
 # Display the link url
-keymap	u	PEEK_LINK
+keymap u    PEEK_LINK
 # menu of links
-keymap	M-l	LIST_MENU
+keymap M-l  LIST_MENU
 # Another link list
-keymap	L	LIST
+keymap L    LIST
 # jump to link in page
-keymap	M-M	MOVE_LIST_MENU 
+keymap M-M  MOVE_LIST_MENU
 
-# Buffer operations
+# }}}
+
+# Buffer operations {{{
+
+# Previous buffer, close current
+keymap B    BACK
+# Navigate back without deleting current buffer
+keymap <    PREV
+# Navigate forward without deleting current buffer
+keymap >    NEXT
 # Display current buffer URL
-keymap	c	PEEK
-keymap	s	SELECT_MENU
-# Open current buffer in an external browser (application)
-keymap	O	EXTERN
+keymap c    PEEK
+# Pop-up menu with open buffers
+keymap s    SELECT_MENU
+# Open current buffer in an external browser (app)
+keymap O    EXTERN
 # Open new URL
-keymap	U	GOTO
-# Open relative URL
-keymap	M-u	GOTO_RELATIVE
+keymap U    GOTO
+keymap M-u  GOTO_RELATIVE
 # Open local file
-keymap	V	LOAD
+keymap V    LOAD
 # edit buffer in VIM (or editor)
-keymap	M-e	EDIT_SCREEN
+keymap M-e  EDIT_SCREEN
 # Edit source in VIM (or editor)
-keymap	E	EDIT
-keymap	|	PIPE_BUF
+keymap E    EDIT
+keymap |    PIPE_BUF
 # Save buffer
-keymap	S	SAVE_SCREEN
+keymap S    SAVE_SCREEN
 # Save html
-keymap	M-s	SAVE
-keymap	C-l	REDRAW
-keymap	R	RELOAD
+keymap M-s  SAVE
+keymap C-l  REDRAW
+keymap R    RELOAD
 # View source
-keymap	v	VIEW
-# Navigate back and forth between buffers without deleting current
-keymap	<   PREV
-keymap	>   NEXT
+keymap v    VIEW
 
-# Image operations
-keymap	I	VIEW_IMAGE
-keymap	M-I	SAVE_IMAGE
-keymap	i	PEEK_IMG
+# }}}
+
+# Image operations {{{
+
+keymap I    VIEW_IMAGE
+keymap M-I  SAVE_IMAGE
+# Peek at image URL
+keymap i    PEEK_IMG
+
+# }}}
+
+# Misc {{{
 
 # Trigger input field submit action
-keymap  C-c SUBMIT
-keymap	C-g	LINE_INFO
-keymap	C-h	HISTORY
-#keymap	C-k	COOKIE # easy to accidentally press, slow op 
-keymap	C-o	OPTIONS
-# reread all config options
-keymap  M-r REINIT 
-keymap	M-o	SET_OPTION
-keymap	C-z	SUSPEND
+keymap C-c  SUBMIT
+# Current line #, total lines, cols, etc
+keymap C-g  LINE_INFO
+# Browsing history
+keymap C-h  HISTORY
+#keymap C-k COOKIE
+# Options page
+keymap C-o  OPTIONS
+# Reload config options
+keymap M-r  REINIT
+keymap M-o  SET_OPTION
+keymap C-z  SUSPEND
+keymap !    SHELL
+keymap #    PIPE_SHELL
+keymap @    READ_SHELL
+# page info, including the response HTTP header
+keymap M-+  INFO
+keymap D    DOWNLOAD_LIST
+# Toggle frames
+keymap F    FRAME
+keymap H    HELP
+keymap m    MOUSE_TOGGLE
+keymap q    QUIT
+keymap Q    EXIT
+keymap r    VERSION
+keymap M    MENU
 
-keymap	!	SHELL
-keymap	#	PIPE_SHELL
-# INFO includes the page response HTTP header
-keymap	M-+	INFO
-keymap	@	READ_SHELL
-keymap	D	DOWNLOAD_LIST
-keymap	F	FRAME
-keymap	H	HELP
-keymap	m	MOUSE_TOGGLE
-keymap	q	QUIT
-keymap	Q	EXIT
-keymap	r	VERSION
+keymap M-a ADD_BOOKMARK
+# Bookmark page
+keymap M-b BOOKMARK
+# Run command
+keymap M-c COMMAND
+keymap M-k DEFINE_KEY
+# Invoke the external dictionary with input word
+keymap M-w DICT_WORD
+# Invoke the dictionary with word under cursor
+keymap M-W DICT_WORD_AT
 
-keymap	M-a	ADD_BOOKMARK
-keymap	M-b	BOOKMARK
-keymap	M-c	COMMAND
-keymap	M-k	DEFINE_KEY
-keymap	M-w	DICT_WORD
-keymap	M-W	DICT_WORD_AT
+# }}}
 
-# Open specific pages. Also showcases macros via COMMAND
-keymap	M-1	COMMAND  "GOTO https://duckduckgo.com/lite/; NEXT_LINK; GOTO_LINK"
-keymap	M-2	GOTO http://wttr.in/?lang=fr&m
+# Specific pages shortcuts. Also showcases macros via COMMAND {{{
+
+keymap M-1 COMMAND  "GOTO https://duckduckgo.com/lite/; NEXT_LINK; GOTO_LINK"
+keymap M-2 GOTO     http://wttr.in/?lang=fr&m
 # strip out extra 'pre-content' on CMS-rich or wordpress sites with id="content" tag
-#keymap  M-7 COMMAND "VIEW; PIPE_BUF \"sed -n '1,/<body/p; /id=\\\"content\\\"/,$p'\" VIEW"
+#keymap  M-7        COMMAND "VIEW; PIPE_BUF \"sed -n '1,/<body/p; /id=\\\"content\\\"/,$p'\" VIEW"
+keymap M-8 COMMAND "ADD_BOOKMARK; LINK_END; GOTO_LINK"
 # Add bookmark in one stroke
-keymap  M-8 COMMAND "ADD_BOOKMARK; LINK_END; GOTO_LINK"
-keymap  M-9 COMMAND "PIPE_BUF linkgrabber; BACK; REDRAW"
+keymap M-9 COMMAND "PIPE_BUF linkgrabber; BACK; REDRAW"
 # View these user-defined commands
-keymap  M-? COMMAND "HELP; SEARCH User-Defined; NEXT_PAGE; CENTER_V"
-keymap	M-T	COMMAND "VIEW; PIPE_BUF tabletocsv; EDIT_SCREEN"
+keymap M-? COMMAND "HELP; SEARCH User-Defined; NEXT_PAGE; CENTER_V"
+keymap M-T COMMAND "VIEW; PIPE_BUF tabletocsv; EDIT_SCREEN"
 
-keymap	M	    MENU
-keymap	M-[E	MENU
-keymap	M-[L	MENU
-keymap	M-[Z	PREV_LINK
+# }}}
 
-keymap	M-[1~	BEGIN
-keymap	M-[2~	MENU
-keymap	M-[4~	END
-keymap	M-[5~	PREV_PAGE
-keymap	M-[6~	NEXT_PAGE
-keymap	M-[28~	MENU
+# Mouse Ops {{{
+
+keymap M-[E     MENU
+keymap M-[L     MENU
+keymap M-[Z     PREV_LINK
+
+keymap M-[1~    BEGIN
+keymap M-[2~    MENU
+keymap M-[4~    END
+keymap M-[5~    PREV_PAGE
+keymap M-[6~    NEXT_PAGE
+keymap M-[28~   MENU
+
+# }}}
 
