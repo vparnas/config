@@ -156,8 +156,7 @@ vnoremap <C-j> :m'>+<CR>gv=gv
 vnoremap <C-k> :m-2<CR>gv=gv
 
 " Navigation related 
-" Buffer navigation commands
-" Easier shortcut to jump to alternate (last '#') file, also <C-^> 
+" Jump to alternate (last) file in '#' register, also <C-^> 
 nmap <leader><space> :b#<cr>
 nmap <BS> :b#<cr>
 " List all buffers and offer selection or buffer operation by number/name
@@ -302,6 +301,31 @@ vnoremap ;" <ESC>:call SurroundVisualWithCharacter('"')<CR>
 nnoremap ;` :call SurroundWordWithCharacter('`')<CR>
 inoremap ;` <ESC>:call SurroundWordWithCharacter('`')<CR>a
 vnoremap ;` <ESC>:call SurroundVisualWithCharacter('`')<CR>
+" Enclosing constructs around text
+nnoremap ;[ :call SurroundWordWithCharacter('[')<CR>
+inoremap ;[ <ESC>:call SurroundWordWithCharacter('[')<CR>a
+vnoremap ;[ <ESC>:call SurroundVisualWithCharacter('[')<CR>
+nnoremap ;] :call SurroundWordWithCharacter(']')<CR>
+inoremap ;] <ESC>:call SurroundWordWithCharacter(']')<CR>a
+vnoremap ;] <ESC>:call SurroundVisualWithCharacter(']')<CR>
+nnoremap ;( :call SurroundWordWithCharacter('(')<CR>
+inoremap ;( <ESC>:call SurroundWordWithCharacter('(')<CR>a
+vnoremap ;( <ESC>:call SurroundVisualWithCharacter('(')<CR>
+nnoremap ;) :call SurroundWordWithCharacter(')')<CR>
+inoremap ;) <ESC>:call SurroundWordWithCharacter(')')<CR>a
+vnoremap ;) <ESC>:call SurroundVisualWithCharacter(')')<CR>
+nnoremap ;{ :call SurroundWordWithCharacter{'{'{<CR>
+inoremap ;{ <ESC>:call SurroundWordWithCharacter('{')<CR>a
+vnoremap ;{ <ESC>:call SurroundVisualWithCharacter('{')<CR>
+nnoremap ;} :call SurroundWordWithCharacter('}')<CR>
+inoremap ;} <ESC>:call SurroundWordWithCharacter('}')<CR>a
+vnoremap ;} <ESC>:call SurroundVisualWithCharacter('}')<CR>
+nnoremap ;< :call SurroundWordWithCharacter('<')<CR>
+inoremap ;< <ESC>:call SurroundWordWithCharacter('<')<CR>a
+vnoremap ;< <ESC>:call SurroundVisualWithCharacter('<')<CR>
+nnoremap ;> :call SurroundWordWithCharacter('>')<CR>
+inoremap ;> <ESC>:call SurroundWordWithCharacter('>')<CR>a
+vnoremap ;> <ESC>:call SurroundVisualWithCharacter('>')<CR>
 
 " Navigating with guides (<++>) - jump to the next appearance of this construct
 map ;<Tab> <Esc>/<++><Enter>"_c4l
@@ -311,6 +335,12 @@ inoremap ;<Tab> <Esc>/<++><Enter>"_c4l
 nmap ,D O<Esc>10i=<Esc>a<Space><++><Space><Esc>10a=<Esc>0
 
 nmap <leader>n :call RenameFile()<cr>
+
+" Filetype-specific bindings
+" Markdown: ~/.vim/after/ftplugin/markdown/bindings.vim
+" HTML: ~/.vim/after/ftplugin/html.vim
+" LATEX: ~/.vim/after/ftplugin/tex.vim
+" BIB: ~/.vim/after/ftplugin/bib.vim
 
 " }}}
 
@@ -339,11 +369,12 @@ au BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
 au BufNewFile,BufRead *.cir setlocal ft=spice
 au BufNewFile,BufRead calcurse*,*calcurse/notes/* set filetype=markdown
 au BufNewFile,BufRead */tmp/jrnl*,*/journals/*.txt set filetype=markdown
-au BufNewFile,BufRead jrnl-new* execute '1 !echo $JRNL_HEADER'
+au BufNewFile,BufRead */poetry/* set filetype=markdown
 au BufNewFile,BufRead tags* setlocal filetype=tags tabstop=8 shiftwidth=8 noexpandtab
 au BufNewFile,BufRead *.csv setf csv
 au BufNewFile,BufRead calendar* setlocal tabstop=16 shiftwidth=16 noexpandtab
-au BufRead /tmp/mutt-* set textwidth=72
+au BufRead */tmp/jrnl-new* execute '1 !echo $JRNL_HEADER'
+au BufRead */tmp/mutt-* set textwidth=72
 
 " When alias file updated, regenerate the underlying bash shortcuts
 au BufWritePost .aliases !alias-gen %
@@ -353,9 +384,6 @@ au BufWritePost shorthand.txt silent !sed -r '/^(\#|\s*$)/d; s/\s*\#.*//; s/^(\S
 
 " Update binds when sxhkdrc is updated.
 au BufWritePost *sxhkdrc !pkill -USR1 sxhkd
-
-" load available skeleton for new file
-au BufNewFile *.* silent! execute '0r ~/.vim/templates/skeleton.'.expand("<afile>:e") | normal! G
 
 " }}}
 
