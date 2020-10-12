@@ -31,7 +31,7 @@ set showtabline=1   " Show the tabline by default for >1 tabs
 set wildmenu        " enable ctrl-n and ctrl-p to scroll thru matches
 set wildmode=full
 set wildcharm=<C-z>
-set wildignorecase  " tab-complete file names regardless of case
+" set wildignorecase  " Enabling prevents $HOME/ autocompletion. Bug?
 set wildignore+=*.o,*.obj,*~,*.png,*.gif,*.jpg,*.jpeg,*.zip,*.jar,*.pyc
 " set wildignore+=*/tmp/* " if enabled, also prevents any /tmp/ autocommands
 		
@@ -86,8 +86,8 @@ noremap j gj
 noremap k gk
 
 " Preserve selection when indenting
-vmap > >gv
-vmap < <gv
+" vmap > >gv
+" vmap < <gv
 
 " Common files
 nnoremap <leader>. :e $MYVIMRC<cr>
@@ -369,8 +369,7 @@ au BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
 au BufNewFile,BufRead *.cir setlocal ft=spice
 au BufNewFile,BufRead calcurse*,*calcurse/notes/* set filetype=markdown
 au BufNewFile,BufRead */tmp/jrnl*,*/journals/*.txt set filetype=markdown
-au BufNewFile,BufRead */poetry/* set filetype=markdown
-au BufNewFile,BufRead tags* setlocal filetype=tags tabstop=8 shiftwidth=8 noexpandtab
+au BufNewFile,BufRead tags* setlocal filetype=tags tabstop=16 shiftwidth=16 noexpandtab
 au BufNewFile,BufRead *.csv setf csv
 au BufNewFile,BufRead calendar* setlocal tabstop=16 shiftwidth=16 noexpandtab
 au BufRead */tmp/jrnl-new* execute '1 !echo $JRNL_HEADER'

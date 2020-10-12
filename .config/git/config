@@ -11,7 +11,7 @@
     pager = less -F
 
 [pull]
-    rebase = true
+    rebase = false
 
 [push]
     default = upstream
