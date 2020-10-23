@@ -38,7 +38,7 @@ endfunction
 
 function! AddTag(tagname)
     let tagname = input('Tag name: ', a:tagname, 'tag')
-    let tagfile = expand('%:p')
+    let tagfile = expand('%:p:~') " filename relative to home directory
     let tagaddress = input('Address: ', '/\<' . a:tagname . '\>/')
     if (tagname == ''  || tagaddress == '')
         return

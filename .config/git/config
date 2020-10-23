@@ -7,7 +7,7 @@
 [core]
     excludesfile = ~/.config/git/ignore
     attributesfile = ~/.config/git/attributes
-    editor = vim -c startinsert
+    ; editor = vim -c startinsert
     pager = less -F
 
 [pull]

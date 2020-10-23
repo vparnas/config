@@ -217,8 +217,9 @@ vmap ,f :!fmt -78
 nmap ,d :w !diff -u % -<CR>
 nmap ,gd :silent w !git diff % <CR>
 
-" Look up the current word via 'dict'
+" Look up the current word or selection via 'dict'
 nmap ;d :!dict <C-r><C-w><CR>
+vmap ;d y:!dict <C-r>"<CR>
 
 " Make a backup of the file on disk
 nmap ,b :!cp -av % %.bak<CR>
@@ -362,16 +363,16 @@ au FileType picolisp setlocal expandtab tabstop=3 shiftwidth=3 autoindent nosmar
 " Disabled perl file includes to speedup curr buffer include file searches
 au FileType perl setlocal include=''
 
-au BufNewFile,BufRead *.grxml setfiletype xml
 au BufNewFile,BufRead *.asy setlocal filetype=c makeprg=asy\ % autowrite
 au BufNewFile,BufRead *.tex setlocal makeprg=pdflatex\ % autowrite
 au BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
 au BufNewFile,BufRead *.cir setlocal ft=spice
 au BufNewFile,BufRead calcurse*,*calcurse/notes/* set filetype=markdown
 au BufNewFile,BufRead */tmp/jrnl*,*/journals/*.txt set filetype=markdown
+au BufNewFile,BufRead */poetry/[^.]* set filetype=markdown
 au BufNewFile,BufRead tags* setlocal filetype=tags tabstop=16 shiftwidth=16 noexpandtab
 au BufNewFile,BufRead *.csv setf csv
-au BufNewFile,BufRead calendar* setlocal tabstop=16 shiftwidth=16 noexpandtab
+au BufNewFile,BufRead */calendar/* setlocal tabstop=16 shiftwidth=16 noexpandtab
 au BufRead */tmp/jrnl-new* execute '1 !echo $JRNL_HEADER'
 au BufRead */tmp/mutt-* set textwidth=72
 
@@ -383,6 +384,16 @@ au BufWritePost shorthand.txt silent !sed -r '/^(\#|\s*$)/d; s/\s*\#.*//; s/^(\S
 
 " Update binds when sxhkdrc is updated.
 au BufWritePost *sxhkdrc !pkill -USR1 sxhkd
+
+" Populate specific files/types with skeleton content
+augroup templates
+    " Delete old autocommands
+    au!
+    " Load skeleton named after last part of directory for given pattern(s)
+    au BufNewFile */poetry/[^.]* silent! execute '0r ~/.vim/templates/skeleton.'.expand("<afile>:p:h:t")
+    " Load skeleton named after the file extension for given pattern(s)
+    au BufNewFile *.sh silent! execute '0r ~/.vim/templates/skeleton.'.expand("<afile>:e")
+augroup END
 
 " }}}
 
