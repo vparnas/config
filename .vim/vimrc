@@ -6,7 +6,18 @@ set hidden          " Unloaded buffers remain in memory, with all unsaved change
 set scrolloff=0     " Don't enforce any visible lines beyond cursor position
 set showbreak=↪     " better line wraps
 set autoindent      " new line indent is obtained from the previous line
-set history=100     " commands to store in search history
+set history=50      " commands to store in search, command-line, input-line history
+set noswapfile      " Only enable swapfile for certain buffers (in autocommands)
+set viminfofile=~/.vim/viminfo
+
+" Vim info (data saved upon exiting VIM or with :wv[iminfo]
+" ': Store marks for this # prev files
+" <: max lines for registers
+" h: disable 'hlsearch' effect upon load
+" r: don't save marks for this file prefix
+" s: maximum size of an item in Kbyte
+" n: name of the viminfo file (overwritten with 'viminfofile'). Include last.
+set viminfo='50,<50,s10,h,r~/.w3m/w3mtmp,r/dev/shm,r/tmp
 
 " Tab related
 " To insert a real tab when 'expandtab' is on, use CTRL-V<Tab>.
@@ -369,12 +380,14 @@ au BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
 au BufNewFile,BufRead *.cir setlocal ft=spice
 au BufNewFile,BufRead calcurse*,*calcurse/notes/* set filetype=markdown
 au BufNewFile,BufRead */tmp/jrnl*,*/journals/*.txt set filetype=markdown
-au BufNewFile,BufRead */poetry/[^.]* set filetype=markdown
+au BufNewFile,BufRead */writing/poetry/[^.]* set filetype=markdown
 au BufNewFile,BufRead tags* setlocal filetype=tags tabstop=16 shiftwidth=16 noexpandtab
 au BufNewFile,BufRead *.csv setf csv
 au BufNewFile,BufRead */calendar/* setlocal tabstop=16 shiftwidth=16 noexpandtab
 au BufRead */tmp/jrnl-new* execute '1 !echo $JRNL_HEADER'
-au BufRead */tmp/mutt-* set textwidth=72
+au BufRead */tmp/mutt* set textwidth=72 
+" Enable swapfile for these temporary buffers
+au BufRead */tmp/mutt*,*/tmp/jrnl*,~/.w3m/w3mtmp* setlocal swapfile
 
 " When alias file updated, regenerate the underlying bash shortcuts
 au BufWritePost .aliases !alias-gen %
@@ -390,7 +403,7 @@ augroup templates
     " Delete old autocommands
     au!
     " Load skeleton named after last part of directory for given pattern(s)
-    au BufNewFile */poetry/[^.]* silent! execute '0r ~/.vim/templates/skeleton.'.expand("<afile>:p:h:t")
+    au BufNewFile */writing/poetry/[^.]* silent! execute '0r ~/.vim/templates/skeleton.'.expand("<afile>:p:h:t")
     " Load skeleton named after the file extension for given pattern(s)
     au BufNewFile *.sh silent! execute '0r ~/.vim/templates/skeleton.'.expand("<afile>:e")
 augroup END
