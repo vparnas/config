@@ -8,7 +8,11 @@ set showbreak=↪     " better line wraps
 set autoindent      " new line indent is obtained from the previous line
 set history=50      " commands to store in search, command-line, input-line history
 set noswapfile      " Only enable swapfile for certain buffers (in autocommands)
+set backupskip=*/tmp/*,~/.w3m/w3mtmp*
 set viminfofile=~/.vim/viminfo
+" Only process the modeline from the first or last line of the file
+" Prevent the string 'ex:' (short for example) from interpretation as a modeline
+set modelines=1
 
 " Vim info (data saved upon exiting VIM or with :wv[iminfo]
 " ': Store marks for this # prev files
@@ -45,7 +49,7 @@ set wildcharm=<C-z>
 " set wildignorecase  " Enabling prevents $HOME/ autocompletion. Bug?
 set wildignore+=*.o,*.obj,*~,*.png,*.gif,*.jpg,*.jpeg,*.zip,*.jar,*.pyc
 " set wildignore+=*/tmp/* " if enabled, also prevents any /tmp/ autocommands
-		
+
 set list            " display the below characters
 set listchars=tab:»\ ,trail:·,nbsp:·
 
@@ -263,7 +267,7 @@ nnoremap ;C :cexpr []<CR>
 " TODO: prepend vimgrep with :noautocmd for speedup
 
 " Move lines matching pattern to below current line 
-nnoremap ,m :g//m''<Left><Left><Left><Left>
+map ,m :g//m''<Left><Left><Left><Left>
 
 " Spelling 
 " Apply the first spelling correction
@@ -349,10 +353,10 @@ nmap ,D O<Esc>10i=<Esc>a<Space><++><Space><Esc>10a=<Esc>0
 nmap <leader>n :call RenameFile()<cr>
 
 " Filetype-specific bindings
-" Markdown: ~/.vim/after/ftplugin/markdown/bindings.vim
+" Markdown: ~/.vim/ftplugin/markdown/bindings.vim
 " HTML: ~/.vim/after/ftplugin/html.vim
-" LATEX: ~/.vim/after/ftplugin/tex.vim
-" BIB: ~/.vim/after/ftplugin/bib.vim
+" LATEX: ~/.vim/ftplugin/tex.vim
+" BIB: ~/.vim/ftplugin/bib.vim
 
 " }}}
 
@@ -388,6 +392,8 @@ au BufRead */tmp/jrnl-new* execute '1 !echo $JRNL_HEADER'
 au BufRead */tmp/mutt* set textwidth=72 
 " Enable swapfile for these temporary buffers
 au BufRead */tmp/mutt*,*/tmp/jrnl*,~/.w3m/w3mtmp* setlocal swapfile
+" Don't save undo history upon exiting these buffers
+au BufRead */tmp/*,~/.w3m/w3mtmp*,/dev/shm/* setlocal noundofile
 
 " When alias file updated, regenerate the underlying bash shortcuts
 au BufWritePost .aliases !alias-gen %
