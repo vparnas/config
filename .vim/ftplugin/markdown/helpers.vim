@@ -23,3 +23,24 @@ function! GenRefSection()
     $
 endfunction
 command! GenRefSection silent call GenRefSection()
+
+" Generate a Table of Contents for section headings in a scratch buffer
+" If parent (top-level) headings are deeper than H3 (###) may need to shift
+"   one width left for the markdown to properly render in markdown
+function! GenTOC()
+    " Create an anchor for each section using first section word
+    %s/\v^#.{-}(\w+).*/& <a name='\l\1'><\/a>/
+    " Initially generate the TOC at the bottom of the main buffer
+    $norm o### Contents
+    1,'^-1g/^#/t$
+    '^+,$s/#/ /g
+    '^+,$s/^\s\+/&- /g
+    '^+,$<
+    '^+,$s/\v- \zs([^<]+)\s+.*["'](\w+)["'].*/[\1](#\2)/g
+    " Move the TOC to the scratch buffer
+    '^,$d
+    new
+    setlocal buftype=nofile bufhidden=hide noswapfile
+    put
+endfunction
+command! GenTOC silent! call GenTOC()

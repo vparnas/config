@@ -1,9 +1,7 @@
 map <buffer> <leader>h ggO---<cr>Title:<Space><++><cr>Date:<Space><++><Enter>Category:<Space><++><Enter>Status:<Space>Published<Enter>...<Enter><Enter><esc>
 
 " Generate a Table of Contents from section headers
-" NOTE: Insure each section header terminates with <a name='anchor'></a>
-" TODO: convert to a function within helpers.vim
-map <buffer> <leader>T :call setreg('a', [])<CR>:g/^#/yank A<cr>:new +setlocal\ buftype=nofile<cr>:put!a<cr>:%s/#/\ /g<cr>:%s/^\s\+/\0-\ /g<cr>:%<<cr>:%s/\- \([^<]\+\)\s\+.*["']\(\w\+\)["'].*/- [\1](#\2)/g<cr> {O###<space>Contents<CR><ESC>
+map <buffer> <leader>T :GenTOC<cr>
 
 " Turn current word/selection into an inline link
 map <buffer> <leader>w yiWi[<esc>Ea](<esc>pa)
