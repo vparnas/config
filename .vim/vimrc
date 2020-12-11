@@ -211,9 +211,6 @@ nnoremap to :tabonly<CR>
 " <C-w>T will move the current window to a new tab page.
 nnoremap <leader>- :call ToggleTabLine()<cr>
 
-" Open buffer or selection as a suckless sent presentation
-map ,s :w !sent<CR>
-
 " Pipe buffer content to the jrnl app
 map ,j :w !jrnl
 
@@ -293,55 +290,21 @@ nnoremap ;u guiw
 nmap ;c gew~b
 imap ;c <ESC>gew~`^i<Right>
 
-" Emphasize the current word or selected text with asterisks
-nnoremap ;e :call SurroundWordWithCharacter("*")<CR>
-inoremap ;e <ESC>:call SurroundWordWithCharacter("*")<CR>a
-vnoremap ;e <ESC>:call SurroundVisualWithCharacter("*")<CR>
+" Emphasize the current word or selected text with the argument character
+noremap <expr> ;s '<cmd>call SurroundWordWithCharacter("' . nr2char(getchar()) . '")<CR>'
+inoremap <expr> ;s '<cmd>call SurroundWordWithCharacter("' . nr2char(getchar()) . '")<CR>'
 " Bold the text 
-nnoremap ;b :call SurroundWordWithCharacter("**")<CR>
-inoremap ;b <ESC>:call SurroundWordWithCharacter("**")<CR>a
-vnoremap ;b <ESC>:call SurroundVisualWithCharacter("**")<CR>
-" Strike out the text 
-nnoremap ;s :call SurroundWordWithCharacter("~~")<CR>
-inoremap ;s <ESC>:call SurroundWordWithCharacter("~~")<CR>a
-vnoremap ;s <ESC>:call SurroundVisualWithCharacter("~~")<CR>
-" Single quotes around text
-nnoremap ;' :call SurroundWordWithCharacter("'")<CR>
-inoremap ;' <ESC>:call SurroundWordWithCharacter("'")<CR>a
-vnoremap ;' <ESC>:call SurroundVisualWithCharacter("'")<CR>
+noremap ;b <cmd>call SurroundWordWithCharacter("**")<CR>
+inoremap ;b <cmd>call SurroundWordWithCharacter("**")<CR>
 " Double quotes around text
-nnoremap ;" :call SurroundWordWithCharacter('"')<CR>
-inoremap ;" <ESC>:call SurroundWordWithCharacter('"')<CR>a
-vnoremap ;" <ESC>:call SurroundVisualWithCharacter('"')<CR>
-" ` around text
-nnoremap ;` :call SurroundWordWithCharacter('`')<CR>
-inoremap ;` <ESC>:call SurroundWordWithCharacter('`')<CR>a
-vnoremap ;` <ESC>:call SurroundVisualWithCharacter('`')<CR>
-" Enclosing constructs around text
-nnoremap ;[ :call SurroundWordWithCharacter('[')<CR>
-inoremap ;[ <ESC>:call SurroundWordWithCharacter('[')<CR>a
-vnoremap ;[ <ESC>:call SurroundVisualWithCharacter('[')<CR>
-nnoremap ;] :call SurroundWordWithCharacter(']')<CR>
-inoremap ;] <ESC>:call SurroundWordWithCharacter(']')<CR>a
-vnoremap ;] <ESC>:call SurroundVisualWithCharacter(']')<CR>
-nnoremap ;( :call SurroundWordWithCharacter('(')<CR>
-inoremap ;( <ESC>:call SurroundWordWithCharacter('(')<CR>a
-vnoremap ;( <ESC>:call SurroundVisualWithCharacter('(')<CR>
-nnoremap ;) :call SurroundWordWithCharacter(')')<CR>
-inoremap ;) <ESC>:call SurroundWordWithCharacter(')')<CR>a
-vnoremap ;) <ESC>:call SurroundVisualWithCharacter(')')<CR>
-nnoremap ;{ :call SurroundWordWithCharacter{'{'{<CR>
-inoremap ;{ <ESC>:call SurroundWordWithCharacter('{')<CR>a
-vnoremap ;{ <ESC>:call SurroundVisualWithCharacter('{')<CR>
-nnoremap ;} :call SurroundWordWithCharacter('}')<CR>
-inoremap ;} <ESC>:call SurroundWordWithCharacter('}')<CR>a
-vnoremap ;} <ESC>:call SurroundVisualWithCharacter('}')<CR>
-nnoremap ;< :call SurroundWordWithCharacter('<')<CR>
-inoremap ;< <ESC>:call SurroundWordWithCharacter('<')<CR>a
-vnoremap ;< <ESC>:call SurroundVisualWithCharacter('<')<CR>
-nnoremap ;> :call SurroundWordWithCharacter('>')<CR>
-inoremap ;> <ESC>:call SurroundWordWithCharacter('>')<CR>a
-vnoremap ;> <ESC>:call SurroundVisualWithCharacter('>')<CR>
+noremap ;" <cmd>call SurroundWordWithCharacter('"')<CR>
+inoremap ;" <cmd>call SurroundWordWithCharacter('"')<CR>
+
+" Switch everything from current word to the next deliniating character
+" with everything that follows after until the terminating character (or EOL)
+nmap <expr> ,s ':call SwitchFieldsUntilTerm("' . nr2char(getchar()) . '","' . nr2char(getchar()) . '")<CR>'
+" Same as above, but only require the deliniating character
+nmap <expr> ,S ':call SwitchFields("' . nr2char(getchar()) . '")<CR>'
 
 " Navigating with guides (<++>) - jump to the next appearance of this construct
 map ;<Tab> <Esc>/<++><Enter>"_c4l

@@ -14,26 +14,22 @@ function! SurroundWordWithCharacter(char)
         let left = '<'
         let right = '>'
     endif
-    execute "normal gEwi" . left . "\<C-o>E\<right>" . right . "\<Esc>"
+    let currentMode = mode()
+    if (currentMode == 'v' || currentMode == 'V')
+        execute "normal \<ESC>`>a" . right . "\<ESC>`<i" . left . "\<Esc>"
+    else
+        execute "normal gEwi" . left . "\<C-o>E\<right>" . right . "\<Esc>"
+    endif
 endfunction
 
-function! SurroundVisualWithCharacter(char)
-    let left = a:char
-    let right = a:char
-    if (a:char == '[' || a:char == ']')
-        let left = '['
-        let right = ']'
-    elseif (a:char == '(' || a:char == ')')
-        let left = '('
-        let right = ')'
-    elseif (a:char == '{' || a:char == '}')
-        let left = '{'
-        let right = '}'
-    elseif (a:char == '<' || a:char == '>')
-        let left = '<'
-        let right = '>'
-    endif
-    execute "normal `>a" . right . "\<ESC>`<i" . left . "\<Esc>"
+function! SwitchFields(delim)
+    call SwitchFieldsUntilTerm(a:delim, a:delim)
+endfunction
+
+" Switch everything from current word to the character 'delim'
+" with everything that follows after until the character 'term' (or EOL)
+function! SwitchFieldsUntilTerm(delim, term)
+    exec 'silent! :s/\v(\k*%#.{-})(\s*' . a:delim . '\s*)([^' . a:term . ']*)/\3\2\1/'
 endfunction
 
 function! AddTag(tagname)
