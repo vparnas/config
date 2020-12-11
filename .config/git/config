@@ -65,6 +65,8 @@
     s = status -sb
     status-grep = !sh -c \"git status --porcelain | awk '{ print \\$2 }' | grep -i $1\" -
 
+    stash-all = git stash push --include-untracked
+
     unstage = reset HEAD --
 
     tags = tag -n1 -l

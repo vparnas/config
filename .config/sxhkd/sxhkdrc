@@ -1,7 +1,7 @@
 # https://github.com/baskerville/sxhkd
 
 super + Return
-	$TERMINAL
+    $TERMINAL
 
 # Large-font terminal and respective applications
 super + {shift + Return, i}
@@ -9,7 +9,7 @@ super + {shift + Return, i}
     {_, watch -t -n 4 status-mon -A}
 
 super + d
-	dmenu_run
+    dmenu_run
 #super + shift + p
 #    lisp rlwrap sbcl --noinform
 super + {a,r,s,y,n}
@@ -25,7 +25,7 @@ super + {a,r,s,y,n}
     $TERMINAL_PERSIST email mutt
 # Screen key display toggle
 super + {shift + s,Scroll_Lock}
-	killall screenkey || screenkey
+    killall screenkey || screenkey
 
 # Audio
 {super + shift + a,XF86Tools}
@@ -46,7 +46,7 @@ super + XF86Audio{Next,Prev}
     audio_control spotify_{next,prev}
 # Seek foward/back in song
 super + shift + bracket{right,left}
-	audio_control {forward,back}
+    audio_control {forward,back}
 
 # Recording
 # Take screenshot
@@ -54,7 +54,7 @@ Print
     scrot -e 'mv $f ~/screenshots/ 2>/dev/null'
 # Record audio or video
 super + Print
-	dmenurecord
+    dmenurecord
 # kill active recording
 super + Delete
     killrecording
@@ -88,8 +88,8 @@ super + shift + {t,e}
     exec-cmd jrnl_time_{start,end}
 # Display camera video feed
 super + shift + v
-    mpv --untimed /dev/video0 # --untimed eliminates the latency
+    mpv --profile=low-latency --untimed /dev/video0 # --untimed eliminates the latency
 # Wifi network selection
 super + F5
-	$TERMINAL -e sudo wifi-menu
+    $TERMINAL -e sudo wifi-menu
 

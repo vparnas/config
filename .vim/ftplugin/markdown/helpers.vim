@@ -6,7 +6,6 @@
 "       - [site1][]
 "       - [site2][]
 " Converts the original inline links (format [name](url)) to reference format
-
 function! GenRefSection()
     $norm o### Sources referenced <a name='#ref'></a>
     " Copy lines containing inline urls to the bottom section
@@ -29,7 +28,7 @@ command! GenRefSection silent call GenRefSection()
 "   one width left for the markdown to properly render in markdown
 function! GenTOC()
     " Create an anchor for each section using first section word
-    %s/\v^#.{-}(\w+).*/& <a name='\l\1'><\/a>/
+    %s/\v^#.{-}(\w+).*/& <a name='\L\1'><\/a>/
     " Initially generate the TOC at the bottom of the main buffer
     $norm o### Contents
     1,'^-1g/^#/t$
