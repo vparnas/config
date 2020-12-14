@@ -109,9 +109,11 @@ nnoremap <leader>. :e $MYVIMRC<cr>
 nnoremap ,N :e + $NOTES<cr>
 nmap ,T :e $TAGS_GLOBAL<CR>
 
-" change inside | | and / /
-nnoremap ci\| T\|ct\|
-nnoremap ci/ T/ct/
+" Operator mappings for '/' blocks and '|' blocks
+onoremap <silent> i/  :<c-u>normal! T/vt/<cr>
+onoremap <silent> a/  :<c-u>normal! F/vf/<cr>
+onoremap <silent> i\|  :<c-u>normal! T\|vt\|<cr>
+onoremap <silent> a\|  :<c-u>normal! F\|vf\|<cr>
 
 " Tag mappings 
 if empty($TAGS_GLOBAL)
@@ -290,15 +292,11 @@ nnoremap ;u guiw
 nmap ;c gew~b
 imap ;c <ESC>gew~`^i<Right>
 
-" Emphasize the current word or selected text with the argument character
-noremap <expr> ;s '<cmd>call SurroundWordWithCharacter("' . nr2char(getchar()) . '")<CR>'
-inoremap <expr> ;s '<cmd>call SurroundWordWithCharacter("' . nr2char(getchar()) . '")<CR>'
-" Bold the text 
-noremap ;b <cmd>call SurroundWordWithCharacter("**")<CR>
-inoremap ;b <cmd>call SurroundWordWithCharacter("**")<CR>
-" Double quotes around text
-noremap ;" <cmd>call SurroundWordWithCharacter('"')<CR>
-inoremap ;" <cmd>call SurroundWordWithCharacter('"')<CR>
+" Surround the current word or selected text with the argument character
+"   Exception - 'b' for '**' and 'q' for double quote
+" Note: <expr> mapping, per dynamic passage of pressed char and current mode
+noremap <expr> ;s ':call SurroundText("' . nr2char(getchar()) . '", "' . mode() . '")<CR>'
+inoremap <expr> ;s '<c-o>:call SurroundText("' . nr2char(getchar()) . '", "' . mode() . '")<CR>'
 
 " Switch everything from current word to the next deliniating character
 " with everything that follows after until the terminating character (or EOL)

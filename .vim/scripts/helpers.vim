@@ -1,21 +1,24 @@
-function! SurroundWordWithCharacter(char)
-    let left = a:char
-    let right = a:char
-    if (a:char == '[' || a:char == ']')
-        let left = '['
-        let right = ']'
-    elseif (a:char == '(' || a:char == ')')
-        let left = '('
-        let right = ')'
-    elseif (a:char == '{' || a:char == '}')
-        let left = '{'
-        let right = '}'
-    elseif (a:char == '<' || a:char == '>')
-        let left = '<'
-        let right = '>'
+" Surround the current word or selected text with 'char':
+"   symmetric parentheses/brackets, if one of '[](){}<>'
+"   '**' (markdown bold) if 'b'
+"   '"' (double quotes) if q
+"   Otherwise, the character passed verbatim
+function! SurroundText(char, mode)
+    let [left, right] = [a:char,  a:char]
+    if (a:char =~ '[\[\]]')
+        let [left, right] = ['[',  ']']
+    elseif (a:char =~ '[()]')
+        let [left, right] = ['(',  ')']
+    elseif (a:char =~ '[{}]')
+        let [left, right] = ['{',  '}']
+    elseif (a:char =~ '[<>]')
+        let [left, right] = ['<',  '>']
+    elseif (a:char == 'b')
+        let [left, right] = ['**', '**']
+    elseif (a:char == 'q')
+        let [left, right] = ['"',  '"']
     endif
-    let currentMode = mode()
-    if (currentMode == 'v' || currentMode == 'V')
+    if (a:mode =~ 'v')
         execute "normal \<ESC>`>a" . right . "\<ESC>`<i" . left . "\<Esc>"
     else
         execute "normal gEwi" . left . "\<C-o>E\<right>" . right . "\<Esc>"
