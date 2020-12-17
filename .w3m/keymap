@@ -11,7 +11,7 @@
 # Marks {{{
 
 keymap C-@  MARK
-keymap M-m  MARK
+keymap m  MARK
 # Mark all search terms
 keymap \"   REG_MARK
 # Mark URL-like strings as anchors
@@ -19,8 +19,8 @@ keymap :    MARK_URL
 # Mark current word as URL
 keymap ";"  MARK_WORD
 keymap M-:  MARK_MID
-keymap M-.  NEXT_MARK
-keymap M-,  PREV_MARK
+keymap .  NEXT_MARK
+keymap ,  PREV_MARK
 
 # }}}
 
@@ -33,9 +33,9 @@ keymap J    UP
 keymap K    DOWN
 keymap C-y  DOWN
 # Scroll screen left
-keymap ,    LEFT
+keymap M-,  LEFT
 # Scroll screen right
-keymap .    RIGHT
+keymap M-.  RIGHT
 keymap h    MOVE_LEFT
 keymap C-p  MOVE_UP
 keymap k    MOVE_UP
@@ -90,10 +90,8 @@ keymap n    SEARCH_NEXT
 # Tab operations {{{
 
 keymap {        PREV_TAB
-keymap LEFT     PREV_TAB
 keymap DEL      PREV_TAB
 keymap }        NEXT_TAB
-keymap RIGHT    NEXT_TAB
 keymap \\       NEXT_TAB
 keymap M-{      TAB_LEFT
 keymap M-}      TAB_RIGHT
@@ -129,9 +127,11 @@ keymap M-M  MOVE_LIST_MENU
 # Previous buffer, close current
 keymap B    BACK
 # Navigate back without deleting current buffer
-keymap <    PREV
+keymap <        PREV
+keymap LEFT     PREV
 # Navigate forward without deleting current buffer
-keymap >    NEXT
+keymap >        NEXT
+keymap RIGHT    NEXT
 # Display current buffer URL
 keymap c    PEEK
 # Pop-up menu with open buffers
@@ -192,7 +192,7 @@ keymap D    DOWNLOAD_LIST
 # Toggle frames
 keymap F    FRAME
 keymap H    HELP
-keymap m    MOUSE_TOGGLE
+keymap M-m  MOUSE_TOGGLE
 keymap q    QUIT
 keymap Q    EXIT
 keymap r    VERSION
