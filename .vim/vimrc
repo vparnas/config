@@ -134,7 +134,7 @@ nmap ;tl :tlast<CR>
 nmap <F1> :bprevious<CR>
 nmap <F2> :bnext<CR>
 " Switch the current and next word
-nmap <F3> <Esc>:s/\v(<\k*%#\k*>)(\_.{-})(<\k+>)/\3\2\1/<CR>``
+nmap <F3> <Esc>:s/\v(<\k*%#\k*>)(\_.{-})(<\k+>)/\3\2\1/<CR>``<C-L>
 " List browse mode for navigating among indented lists similar to a 
 " file manager navigating directory structure. Requires scripts/listbrowse.vim
 nmap <F4> :call ToggleListMode()<CR>
@@ -267,6 +267,9 @@ nnoremap ;C :cexpr []<CR>
 
 " Move lines matching pattern to below current line 
 map ,m :g//m''<Left><Left><Left><Left>
+
+" Set the next unused lower-case mark, round-robin
+nmap <silent> ;m :call NewMark()<CR>
 
 " Spelling 
 " Apply the first spelling correction

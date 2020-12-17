@@ -1,3 +1,28 @@
+" Set the next unused lowercase [a-z] mark. 
+" If 'z' occupied, continue round-robin to 'a'
+function! NewMark()
+    if (version < 802)
+        return
+    endif
+    if (!exists('b:last_mark'))
+        let list = getmarklist(bufname())
+        call filter(list, {idx, val -> val['mark'] =~ '[a-z]'})
+        if (len(list) == 0)
+            let b:last_mark = 'z'
+        else
+            let b:last_mark = strpart(list[-1].mark, 1)
+        endif
+    endif
+    if (b:last_mark == 'z')
+        let b:last_mark = 'a'
+    else
+        let b:last_mark = nr2char(char2nr(b:last_mark) + 1)
+    endif
+    execute "mark" b:last_mark
+    echo "Mark set:" b:last_mark
+endfunction
+command! NewMark call NewMark()
+
 " Surround the current word or selected text with 'char':
 "   symmetric parentheses/brackets, if one of '[](){}<>'
 "   '**' (markdown bold) if 'b'
@@ -21,7 +46,7 @@ function! SurroundText(char, mode)
     if (a:mode =~ 'v')
         execute "normal \<ESC>`>a" . right . "\<ESC>`<i" . left . "\<Esc>"
     else
-        execute "normal gEwi" . left . "\<C-o>E\<right>" . right . "\<Esc>"
+        execute "normal gEwi" . left . "\<C-o>e\<right>" . right . "\<Esc>"
     endif
 endfunction
 
