@@ -1,23 +1,14 @@
 " Set the next unused lowercase [a-z] mark. 
 " If 'z' occupied, continue round-robin to 'a'
 function! NewMark()
-    if (version < 802)
-        return
-    endif
+    if (version < 802) | echo "unsupported version" | return | endif
     if (!exists('b:last_mark'))
         let list = getmarklist(bufname())
         call filter(list, {idx, val -> val['mark'] =~ '[a-z]'})
-        if (len(list) == 0)
-            let b:last_mark = 'z'
-        else
-            let b:last_mark = strpart(list[-1].mark, 1)
-        endif
+        let b:last_mark = (len(list) == 0) ? 'z' : strpart(list[-1].mark, 1)
     endif
-    if (b:last_mark == 'z')
-        let b:last_mark = 'a'
-    else
-        let b:last_mark = nr2char(char2nr(b:last_mark) + 1)
-    endif
+    let b:last_mark = (b:last_mark == 'z') ? 'a' : 
+                \ nr2char(char2nr(b:last_mark) + 1)
     execute "mark" b:last_mark
     echo "Mark set:" b:last_mark
 endfunction
@@ -56,8 +47,9 @@ endfunction
 
 " Switch everything from current word to the character 'delim'
 " with everything that follows after until the character 'term' (or EOL)
-function! SwitchFieldsUntilTerm(delim, term)
-    exec 'silent! :s/\v(\k*%#.{-})(\s*' . a:delim . '\s*)([^' . a:term . ']*)/\3\2\1/'
+function! SwitchFieldsUntilTerm (delim, term)
+    exec ':silent! s/\v(\k*%#.{-})(\s*\' . a:delim . '\s*)([^\' . 
+                \ a:term . ']*)/\3\2\1/'
 endfunction
 
 function! AddTag(tagname)
