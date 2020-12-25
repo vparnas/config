@@ -213,12 +213,12 @@ keymap M-W DICT_WORD_AT
 
 # Specific pages shortcuts. Also showcases macros via COMMAND {{{
 
-keymap M-1 COMMAND  "GOTO https://duckduckgo.com/lite/; NEXT_LINK; GOTO_LINK"
-keymap M-2 GOTO     http://wttr.in/?lang=fr&m
+keymap M-/ COMMAND  "GOTO https://duckduckgo.com/lite/; NEXT_LINK; GOTO_LINK"
+keymap M-\" GOTO     http://wttr.in/?lang=fr&m
 # strip out extra 'pre-content' on CMS-rich or wordpress sites with id="content" tag
 #keymap  M-7        COMMAND "VIEW; PIPE_BUF \"sed -n '1,/<body/p; /id=\\\"content\\\"/,$p'\" VIEW"
-keymap M-8 COMMAND "ADD_BOOKMARK; LINK_END; GOTO_LINK"
 # Add bookmark in one stroke
+#keymap M-8 COMMAND "ADD_BOOKMARK; LINK_END; GOTO_LINK"
 keymap M-9 COMMAND "PIPE_BUF linkgrabber; BACK; REDRAW"
 # View these user-defined commands
 keymap M-? COMMAND "HELP; SEARCH User-Defined; NEXT_PAGE; CENTER_V"

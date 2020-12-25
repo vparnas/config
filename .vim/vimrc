@@ -94,6 +94,9 @@ color desert
 " Map <space> as leader instead of the default backslash
 let mapleader=" "
 
+" Habit to strike <c-b> as the tmux prefix (since changed)
+map <c-b> <Nop>
+
 " Y behaves copies from the cursor to EOL
 noremap Y y$
 
@@ -134,7 +137,7 @@ nmap ;tl :tlast<CR>
 nmap <F1> :bprevious<CR>
 nmap <F2> :bnext<CR>
 " Switch the current and next word
-nmap <F3> <Esc>:s/\v(<\k*%#\k*>)(\_.{-})(<\k+>)/\3\2\1/<CR>``<C-L>
+nmap <F3> :s/\v(<\k*%#\k*>)(\_.{-})(<\k+>)/\3\2\1/<CR>``<C-L>
 " List browse mode for navigating among indented lists similar to a 
 " file manager navigating directory structure. Requires scripts/listbrowse.vim
 nmap <F4> :call ToggleListMode()<CR>
@@ -167,8 +170,8 @@ nmap <Leader>0 <F10>
 " Move lines (or entire visual blocks) with Ctrl+j/k keys (Alt mappings don't work)
 nnoremap <C-j> :m+<CR>==
 nnoremap <C-k> :m-2<CR>==
-inoremap <C-j> <Esc>:m+<CR>==gi
-inoremap <C-k> <Esc>:m-2<CR>==gi
+" inoremap <C-j> <Esc>:m+<CR>==gi
+" inoremap <C-k> <Esc>:m-2<CR>==gi
 vnoremap <C-j> :m'>+<CR>gv=gv
 vnoremap <C-k> :m-2<CR>gv=gv
 
@@ -229,7 +232,7 @@ vmap ,f :!fmt -78
 
 " view the diff/gitdiff between buffer and respective file on disk
 nmap ,d :w !diff -u % -<CR>
-nmap ,gd :silent w !git diff % <CR>
+nmap ,gd :!git diff % <CR>
 
 " Look up the current word or selection via 'dict'
 nmap ;d :!dict <C-r><C-w><CR>
@@ -303,9 +306,9 @@ inoremap <expr> ;s '<c-o>:call SurroundText("' . nr2char(getchar()) . '", "' . m
 
 " Switch everything from current word to the next deliniating character
 " with everything that follows after until the terminating character (or EOL)
-nmap <expr> ,s ':call SwitchFieldsUntilTerm("' . nr2char(getchar()) . '","' . nr2char(getchar()) . '")<CR>'
+nmap <expr> ,s ':call SwitchFieldsUntilTerm("' . nr2char(getchar()) . '","' . nr2char(getchar()) . '")<CR>``'
 " Same as above, but only require the deliniating character
-nmap <expr> ,S ':call SwitchFields("' . nr2char(getchar()) . '")<CR>'
+nmap <expr> ,S ':call SwitchFields("' . nr2char(getchar()) . '")<CR>``'
 
 " Navigating with guides (<++>) - jump to the next appearance of this construct
 map ;<Tab> <Esc>/<++><Enter>"_c4l
@@ -318,6 +321,7 @@ nmap <leader>n :call RenameFile()<cr>
 
 " Filetype-specific bindings
 " Markdown: ~/.vim/ftplugin/markdown/bindings.vim
+"       and ~/.vim/ftplugin/markdown/helpers.vim
 " HTML: ~/.vim/after/ftplugin/html.vim
 " LATEX: ~/.vim/ftplugin/tex.vim
 " BIB: ~/.vim/ftplugin/bib.vim
@@ -342,6 +346,7 @@ au FileType picolisp setlocal expandtab tabstop=3 shiftwidth=3 autoindent nosmar
 " Disabled perl file includes to speedup curr buffer include file searches
 au FileType perl setlocal include=''
 
+au BufNewFile,BufRead inspirations.dat setlocal makeprg=pyro\ %
 au BufNewFile,BufRead *.asy setlocal filetype=c makeprg=asy\ % autowrite
 au BufNewFile,BufRead *.tex setlocal makeprg=pdflatex\ % autowrite
 au BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
