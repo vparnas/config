@@ -335,10 +335,11 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 " Custom highlight group
 au Filetype * highlight MyHighlights ctermbg=DarkYellow guibg=DarkYellow guifg=Black ctermfg=Black
-au Filetype * match MyHighlights /TODO\|NOTE/
-" Highlight characters beyond 80
-" au Filetype * highlight rightMargin term=bold ctermfg=red guifg=red
-" au Filetype * 2match rightMargin /.\%>80v/
+au Filetype * match MyHighlights /TODO\|NOTE\|UPDATE/
+" Highlight characters beyond 80 in source code
+" NOTE: once enabled, persists for current window, regardless of file type
+au Filetype perl,c,sh,picolisp highlight rightMargin term=bold ctermfg=red guifg=red
+au Filetype perl,c,sh,picolisp 2match rightMargin /.\%>80v/
 
 autocmd FileType gitcommit setlocal spell
 au FileType picolisp setlocal expandtab tabstop=3 shiftwidth=3 autoindent nosmartindent shellpipe= makeprg=pil\ %\ +
