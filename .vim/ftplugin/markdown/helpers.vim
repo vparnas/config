@@ -27,8 +27,10 @@ command! GenRefSection silent call GenRefSection()
 " If parent (top-level) headings are deeper than H3 (###) may need to shift
 "   one width left for the markdown to properly render in markdown
 function! GenTOC()
-    " Create an anchor for each section using first section word
-    %s/\v^#.{-}(\w+).*/& <a name='\L\1'><\/a>/
+    " Create section anchors using first 10 chars of section name
+    %s/\v^#+.{-}([[:alnum:][:punct:] ]{1,10}).*/& <a name="\L\1"><\/a>/
+    " Remove punctuation and spaces within the anchor names
+    %s/\v^#+.*name\="\zs.*\ze"/\=substitute(submatch(0),"[[:punct:] ]","","g")
     " Initially generate the TOC at the bottom of the main buffer
     $norm o### Contents
     1,'^-1g/^#/t$
