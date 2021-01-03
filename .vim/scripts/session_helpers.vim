@@ -11,6 +11,9 @@ function! MakeSession()
     redraw!
   endif
   let b:sessionfile = b:sessiondir . '/session.vim'
+  " Don't save arguments to prevent them from reloading 
+  " when their respective buffers are deleted
+  exe "%argdelete"
   exe "mksession! " . b:sessionfile
 endfunction
 
@@ -27,10 +30,7 @@ function! LoadSession()
   endif
 endfunction
 
-" au BufWinLeave * mkview
-" au BufWinEnter * silent loadview
 " au VimEnter * nested :call LoadSession()
 " au VimLeave * :call UpdateSession()
-" Map \u, \m, \l to appropriate actions on session
 map <leader>M :call MakeSession()<CR>
 map <leader>L :call LoadSession()<CR>
