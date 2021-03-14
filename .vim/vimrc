@@ -8,11 +8,12 @@ set showbreak=↪     " better line wraps
 set autoindent      " new line indent is obtained from the previous line
 set history=50      " commands to store in search, command-line, input-line history
 set noswapfile      " Only enable swapfile for certain buffers (in autocommands)
-set backupskip=*/tmp/*,~/.w3m/w3mtmp*
+set backupskip=*/tmp/*,~/.w3m/w3mtmp*,/dev/shm/*
 set viminfofile=~/.vim/viminfo
 " Only process the modeline from the first or last line of the file
 " Prevent the string 'ex:' (short for example) from interpretation as a modeline
 set modelines=1
+set backspace=indent,eol,start  " Insert-mode <BS> to work in traditional way
 
 " Vim info (data saved upon exiting VIM or with :wv[iminfo]
 " ': Store marks for this # prev files
@@ -39,9 +40,11 @@ set breakindent
 set foldmethod=marker
 set foldnestmax=3   " deepest fold is 3 levels
 
-set laststatus=0    " Do not display the blue status bar regardless of number of windows open
+set laststatus=0    " Don't display status bar regardless of # of windows open
+":set statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+set ruler           " Use the last line to display line/column number, etc
+set rulerformat=%15(%l/%L,%c%V%)
 set showtabline=1   " Show the tabline by default for >1 tabs
-" set noruler
 
 set wildmenu        " enable ctrl-n and ctrl-p to scroll thru matches
 set wildmode=full
@@ -109,7 +112,7 @@ noremap k gk
 
 " Common files
 nnoremap <leader>. :e $MYVIMRC<cr>
-nnoremap ,N :e + $NOTES<cr>
+nnoremap ,N :e $NOTES<cr>
 nmap ,T :e $TAGS_GLOBAL<CR>
 
 " Operator mappings for '/' blocks and '|' blocks
@@ -117,6 +120,9 @@ onoremap <silent> i/  :<c-u>normal! T/vt/<cr>
 onoremap <silent> a/  :<c-u>normal! F/vf/<cr>
 onoremap <silent> i\|  :<c-u>normal! T\|vt\|<cr>
 onoremap <silent> a\|  :<c-u>normal! F\|vf\|<cr>
+onoremap <silent> i/  :<c-u>normal! T/vt/<cr>
+" Op mapping for everything from cursor to last character entered
+onoremap <silent> <expr> l ':<c-u>normal! v$F' . nr2char(getchar()) . '<cr>'
 
 " Tag mappings 
 if empty($TAGS_GLOBAL)
@@ -126,8 +132,7 @@ set tags+=$TAGS_GLOBAL
 " Remap CTRL+] to use 'tjump' instead of 'tag'
 " map <C-]> :tjump<space><C-R><C-w><CR>
 nmap <leader>t :tag<space>
-nmap ,t yiw:call AddTag('<C-R>"')<CR>
-vmap ,t y:call AddTag('<C-R>"')<CR>
+map ,t :call AddTag('<C-R><C-W>')<CR>
 nmap ;tp :tprev<CR>
 nmap <C-\> :tnext<CR>
 nmap ;tn :tnext<CR>
@@ -181,8 +186,6 @@ nmap <leader><space> :b#<cr>
 nmap <BS> :b#<cr>
 " List all buffers and offer selection or buffer operation by number/name
 nmap <leader>l :ls<CR>:b
-" Toggle the buffer hidden mode globally
-nmap <leader>H :set hidden!<CR>
 " - delete current buffer and display previous buffer in its window
 nmap <leader>dd :b#<CR>:bdelete #<CR>:let @#=@%<CR>
 " Views a list of buffers in tab completion, presuming <C-z> is the *wildcharm*
@@ -301,18 +304,20 @@ imap ;c <ESC>gew~`^i<Right>
 " Surround the current word or selected text with the argument character
 "   Exception - 'b' for '**' and 'q' for double quote
 " Note: <expr> mapping, per dynamic passage of pressed char and current mode
-noremap <expr> ;s ':call SurroundText("' . nr2char(getchar()) . '", "' . mode() . '")<CR>'
-inoremap <expr> ;s '<c-o>:call SurroundText("' . nr2char(getchar()) . '", "' . mode() . '")<CR>'
+noremap <expr> ;s '<cmd>call SurroundText("' . nr2char(getchar()) . '")<CR>'
+inoremap <expr> ;s '<cmd>normal ;s' . nr2char(getchar()) . '<CR>'
 
-" Switch everything from current word to the next deliniating character
-" with everything that follows after until the terminating character (or EOL)
-nmap <expr> ,s ':call SwitchFieldsUntilTerm("' . nr2char(getchar()) . '","' . nr2char(getchar()) . '")<CR>``'
+" Switch (depending on mode)
+"   1. everything from current word to the next deliniating character, or
+"   2. selection
+" with everything after deliniator until the terminating character (or EOL)
+map <silent> <expr> ,s '<cmd>call SwitchFieldsUntilTerm("' . nr2char(getchar()) . '","' . nr2char(getchar()) . '")<CR>``'
 " Same as above, but only require the deliniating character
-nmap <expr> ,S ':call SwitchFields("' . nr2char(getchar()) . '")<CR>``'
+map <silent> <expr> ,S '<cmd>call SwitchFields("' . nr2char(getchar()) . '")<CR>``'
 
-" Navigating with guides (<++>) - jump to the next appearance of this construct
-map ;<Tab> <Esc>/<++><Enter>"_c4l
-inoremap ;<Tab> <Esc>/<++><Enter>"_c4l
+" Navigating with guides (<++>) - enter insert mode at next instance
+map ;<Tab> <Esc>/<++><CR>"_cf>
+inoremap ;<Tab> <Esc>/<++><CR>"_cf>
 
 " Insert a plain text section divider
 nmap ,D O<Esc>10i=<Esc>a<Space><++><Space><Esc>10a=<Esc>0
@@ -363,7 +368,7 @@ au BufRead */tmp/mutt* set textwidth=72
 " Enable swapfile for these temporary buffers
 au BufRead */tmp/mutt*,*/tmp/jrnl*,~/.w3m/w3mtmp* setlocal swapfile
 " Don't save undo history upon exiting these buffers
-au BufRead */tmp/*,~/.w3m/w3mtmp*,/dev/shm/* setlocal noundofile
+au BufNewFile,BufRead */tmp/*,~/.w3m/w3mtmp*,/dev/shm/* setlocal noundofile
 
 " When alias file updated, regenerate the underlying bash shortcuts
 au BufWritePost .aliases !alias-gen %
@@ -394,7 +399,8 @@ augroup END
 " MRU (Most Recently Used plugin)
 let MRU_File = $HOME . '/.vim/vim_mru_files'
 let MRU_Max_Entries = 20
-let MRU_Exclude_Files = '^/tmp/.*'
+let MRU_Exclude_Files = '/tmp/.*\|/w3mtmp.*'
+let MRU_Window_Height = 6
 
 " markdown plugin https://github.com/plasticboy/vim-markdown
 let g:vim_markdown_folding_disabled = 1
