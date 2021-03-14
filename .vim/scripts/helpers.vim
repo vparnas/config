@@ -19,7 +19,7 @@ command! NewMark call NewMark()
 "   '**' (markdown bold) if 'b'
 "   '"' (double quotes) if q
 "   Otherwise, the character passed verbatim
-function! SurroundText(char, mode)
+function! SurroundText(char)
     let [left, right] = [a:char,  a:char]
     if (a:char =~ '[\[\]]')
         let [left, right] = ['[',  ']']
@@ -34,7 +34,7 @@ function! SurroundText(char, mode)
     elseif (a:char == 'q')
         let [left, right] = ['"',  '"']
     endif
-    if (a:mode =~ 'v')
+    if (mode() =~ 'v')
         execute "normal \<ESC>`>a" . right . "\<ESC>`<i" . left . "\<Esc>"
     else
         execute "normal gEwi" . left . "\<C-o>e\<right>" . right . "\<Esc>"
@@ -45,11 +45,17 @@ function! SwitchFields(delim)
     call SwitchFieldsUntilTerm(a:delim, a:delim)
 endfunction
 
-" Switch everything from current word to the character 'delim'
-" with everything that follows after until the character 'term' (or EOL)
+" Switch (depending on mode)
+"   normal: everything from current word to the character 'delim'
+"   visual: selection
+" with everything after 'delim' until the character 'term' (or EOL)
 function! SwitchFieldsUntilTerm (delim, term)
-    exec ':silent! s/\v(\k*%#.{-})(\s*\' . a:delim . '\s*)([^\' . 
-                \ a:term . ']*)/\3\2\1/'
+    let regex_second_part = a:delim . '\s*)([^\' . a:term . ']*)/\3\2\1/'
+    if (mode() =~ 'v')
+        exec ':silent! s/\v(%V.*%V)(.{-}\s*\' . regex_second_part
+    else
+        exec ':silent! s/\v(\k*%#.{-})(\s*\' . regex_second_part
+    endif
 endfunction
 
 function! AddTag(tagname)
