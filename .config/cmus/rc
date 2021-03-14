@@ -7,8 +7,8 @@ set continue=true
 # all, artist or album playback, when play_library=true 
 set aaa_mode=album
 
-# Only play what's in the queue/playlist. 
-set play_library=false
+# If false, only play what's in the queue/playlist. 
+set play_library=true
 set play_sorted=false
 
 # Repeat album or current track, false by default
@@ -23,6 +23,10 @@ set show_hidden=true
 set show_remaining_time=false
 set shuffle=false
 set status_display_program=~/.config/cmus/cmus-status-display
+
+set format_current= %a - %l - %n. %t%= %y 
+# %= (used once) indicates start of right align
+set format_statusline= %{status} %{?show_playback_position?%{position}%{?duration?/%{duration} }?%{?duration?%{duration} }}(%{albumduration}) %{?bpm>0?at %{bpm} BPM }%{?volume>=0?v:%{?lvolume!=rvolume?%{lvolume},%{rvolume} ?%{volume} }}%{?stream?buf: %{buffer} }%{?show_current_bitrate & bitrate>=0?%{bitrate} kbps } | %{?repeat_current?repeat current?%{?play_library?%{playlist_mode} from %{?play_sorted?sorted }library?playlist}} %=| %1{continue}%1{follow}%1{repeat}%1{shuffle}
 
 # Enqueue a random album
 bind -f common R lqueue
