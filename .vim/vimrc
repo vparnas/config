@@ -103,8 +103,8 @@ map <c-b> <Nop>
 " Y behaves copies from the cursor to EOL
 noremap Y y$
 
-noremap j gj
-noremap k gk
+" noremap j gj
+" noremap k gk
 
 " Preserve selection when indenting
 " vmap > >gv
@@ -122,6 +122,7 @@ onoremap <silent> i\|  :<c-u>normal! T\|vt\|<cr>
 onoremap <silent> a\|  :<c-u>normal! F\|vf\|<cr>
 onoremap <silent> i/  :<c-u>normal! T/vt/<cr>
 " Op mapping for everything from cursor to last character entered
+" Ex: 'dl(' will delete everything from cursor to the last '(' of line
 onoremap <silent> <expr> l ':<c-u>normal! v$F' . nr2char(getchar()) . '<cr>'
 
 " Tag mappings 
@@ -141,8 +142,7 @@ nmap ;tl :tlast<CR>
 
 nmap <F1> :bprevious<CR>
 nmap <F2> :bnext<CR>
-" Switch the current and next word
-nmap <F3> :s/\v(<\k*%#\k*>)(\_.{-})(<\k+>)/\3\2\1/<CR>``<C-L>
+nmap <F3> :SwitchCurrentNextWord<CR>``<C-L>
 " List browse mode for navigating among indented lists similar to a 
 " file manager navigating directory structure. Requires scripts/listbrowse.vim
 nmap <F4> :call ToggleListMode()<CR>
@@ -230,8 +230,8 @@ nmap ,n :.w! >> $NOTES \| echo "Line written to notes"<CR>
 vmap ,n :w! >> $NOTES \| echo "Selection written to notes"<CR>
 
 " Format buffer or selection to fixed width (ie for email)
-nmap ,f :%!fmt -78
-vmap ,f :!fmt -78
+command! -nargs=1 -range=% FixedWidth <line1>,<line2>!fmt -<f-args>
+map ,f :FixedWidth 78
 
 " view the diff/gitdiff between buffer and respective file on disk
 nmap ,d :w !diff -u % -<CR>
@@ -239,7 +239,7 @@ nmap ,gd :!git diff % <CR>
 
 " Look up the current word or selection via 'dict'
 nmap ;d :!dict <C-r><C-w><CR>
-vmap ;d y:!dict <C-r>"<CR>
+vmap ;d y:!dict '<C-r>"'<CR>
 
 " Make a backup of the file on disk
 nmap ,b :!cp -av % %.bak<CR>
@@ -247,8 +247,10 @@ nmap ,b :!cp -av % %.bak<CR>
 " Email the buffer or selection via mutt
 map ,e :w !mutt <address>
 
-" Convert current or selected comma/semicolon-separated list to vertical
-map ,C :s/[,;]\s*/\r/g<CR>
+" Convert list separated by any operator-entered deliniator to vertical, then auto-indent the new lines with '='
+map <expr> ,c ':s/\s*\' . nr2char(getchar()) . '\s*/\r/g \| normal V``j=<CR>'
+" Same as above, but fixed mapping for comma and semicolon delimeters
+map ,C :s/\s*[,;]\s*/\r/g \| normal V``j=<CR>
 
 " Force a limited width soft-wrapping
 nmap <C-w>m :if &columns>80 \| set columns=80 \| endif<CR>
@@ -307,17 +309,19 @@ imap ;c <ESC>gew~`^i<Right>
 noremap <expr> ;s '<cmd>call SurroundText("' . nr2char(getchar()) . '")<CR>'
 inoremap <expr> ;s '<cmd>normal ;s' . nr2char(getchar()) . '<CR>'
 
+command! SwitchCurrentNextWord s/\v(<\k*%#\k*>)(\_.{-})(<\k+>)/\3\2\1/
+
 " Switch (depending on mode)
 "   1. everything from current word to the next deliniating character, or
 "   2. selection
 " with everything after deliniator until the terminating character (or EOL)
-map <silent> <expr> ,s '<cmd>call SwitchFieldsUntilTerm("' . nr2char(getchar()) . '","' . nr2char(getchar()) . '")<CR>``'
+map <silent> <expr> ,s '<cmd>call SwitchFieldsUntilTerm("' . nr2char(getchar()) . '","' . nr2char(getchar()) . '")<CR>``<Esc>'
 " Same as above, but only require the deliniating character
-map <silent> <expr> ,S '<cmd>call SwitchFields("' . nr2char(getchar()) . '")<CR>``'
+map <silent> <expr> ,S '<cmd>call SwitchFields("' . nr2char(getchar()) . '")<CR>``<Esc>'
 
 " Navigating with guides (<++>) - enter insert mode at next instance
 map ;<Tab> <Esc>/<++><CR>"_cf>
-inoremap ;<Tab> <Esc>/<++><CR>"_cf>
+inoremap ;<Tab> <Esc>:normal ;<Tab><CR>
 
 " Insert a plain text section divider
 nmap ,D O<Esc>10i=<Esc>a<Space><++><Space><Esc>10a=<Esc>0

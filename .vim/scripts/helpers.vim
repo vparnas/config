@@ -1,4 +1,4 @@
-" Set the next unused lowercase [a-z] mark. 
+" Set the next unused lowercase [a-z] mark.
 " If 'z' occupied, continue round-robin to 'a'
 function! NewMark()
     if (version < 802) | echo "unsupported version" | return | endif
@@ -7,7 +7,7 @@ function! NewMark()
         call filter(list, {idx, val -> val['mark'] =~ '[a-z]'})
         let b:last_mark = (len(list) == 0) ? 'z' : strpart(list[-1].mark, 1)
     endif
-    let b:last_mark = (b:last_mark == 'z') ? 'a' : 
+    let b:last_mark = (b:last_mark == 'z') ? 'a' :
                 \ nr2char(char2nr(b:last_mark) + 1)
     execute "mark" b:last_mark
     echo "Mark set:" b:last_mark
@@ -52,7 +52,7 @@ endfunction
 function! SwitchFieldsUntilTerm (delim, term)
     let regex_second_part = a:delim . '\s*)([^\' . a:term . ']*)/\3\2\1/'
     if (mode() =~ 'v')
-        exec ':silent! s/\v(%V.*%V)(.{-}\s*\' . regex_second_part
+        exec ':silent! s/\v(%V.*%V.)(.{-}\s*\' . regex_second_part
     else
         exec ':silent! s/\v(\k*%#.{-})(\s*\' . regex_second_part
     endif
@@ -90,14 +90,11 @@ function! RenameFile()
     let @# = @%
 endfunction
 
-function! RemoveTrailingSpaces()
-   %s/\s\+$//g
-endfunction
-command! RemoveTrailingSpaces call RemoveTrailingSpaces()
+command! -range=% RemoveTrailingSpaces <line1>,<line2>s/\s\+$//
 
 " <leader>vs: display same file in two continuous virtical panes
 :noremap <silent> <Leader>vs :<C-u>let @z=&so<CR>:set so=0 noscb<CR>:bo vs<CR>Ljzt:setl scb<CR><C-w>p:setl scb<CR>:let &so=@z<CR>
-" The mapping (activate via \vs) performs these operations: 
+" The mapping (activate via \vs) performs these operations:
 " :<C-u>              " clear command line (if in visual mode)
 " let @z=&so          " save scrolloff in register z
 " :set so=0 noscb     " set scrolloff to 0 and clear scrollbind
