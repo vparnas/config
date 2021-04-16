@@ -24,6 +24,9 @@ set backspace=indent,eol,start  " Insert-mode <BS> to work in traditional way
 " n: name of the viminfo file (overwritten with 'viminfofile'). Include last.
 set viminfo='50,<50,s10,h,r~/.w3m/w3mtmp,r/dev/shm,r/tmp
 
+" Don't set the alternate file name (# register) for the :read <file> command
+set cpoptions-=a
+
 " Tab related
 " To insert a real tab when 'expandtab' is on, use CTRL-V<Tab>.
 " Use :retab to fix existing tabs
@@ -115,15 +118,23 @@ nnoremap <leader>. :e $MYVIMRC<cr>
 nnoremap ,N :e $NOTES<cr>
 nmap ,T :e $TAGS_GLOBAL<CR>
 
-" Operator mappings for '/' blocks and '|' blocks
-onoremap <silent> i/  :<c-u>normal! T/vt/<cr>
-onoremap <silent> a/  :<c-u>normal! F/vf/<cr>
-onoremap <silent> i\|  :<c-u>normal! T\|vt\|<cr>
-onoremap <silent> a\|  :<c-u>normal! F\|vf\|<cr>
-onoremap <silent> i/  :<c-u>normal! T/vt/<cr>
+" Operator-pending mappings (for operator and visual modes only, not normal)
+map <silent> i/  :<c-u>normal! T/vt/<cr>
+nunmap i/
+map <silent> a/  :<c-u>normal! F/vf/<cr>
+nunmap a/
+map <silent> i\|  :<c-u>normal! T\|vt\|<cr>
+nunmap i\|
+map <silent> a\|  :<c-u>normal! F\|vf\|<cr>
+nunmap a\|
+map <silent> i*  :<c-u>normal! T*vt*<cr>
+nunmap i*
+map <silent> a*  :<c-u>normal! F*vf*<cr>
+nunmap a*
 " Op mapping for everything from cursor to last character entered
 " Ex: 'dl(' will delete everything from cursor to the last '(' of line
-onoremap <silent> <expr> l ':<c-u>normal! v$F' . nr2char(getchar()) . '<cr>'
+noremap <silent> <expr> l ':<c-u>normal! v$F' . nr2char(getchar()) . '<cr>'
+nunmap l
 
 " Tag mappings 
 if empty($TAGS_GLOBAL)
@@ -150,8 +161,8 @@ nmap <F4> :call ToggleListMode()<CR>
 nmap <F5> :make!<CR>
 " Toggle spell-check (:spellinfo to see currently enabled dictionaries)
 nmap <F6> :setlocal spell!<CR>
-" Fill in the desired lang (en,es,pt,pl,ru,...) and press enter
-nmap <F7> :setlocal spelllang=
+" Fill in the desired language(s) (en,es,pt,pl,ru,...) and press enter
+nmap <F7> :setlocal spelllang=en,ru
 " Toggle relative numbering
 nmap <F9> :setlocal relativenumber!<CR>
 
@@ -225,21 +236,24 @@ map ,j :w !jrnl
 " Select a link for copy or open with an application 
 map ,l :silent w !linkgrabber
 
-" Append the line or selection to the notes file in env $NOTES
-nmap ,n :.w! >> $NOTES \| echo "Line written to notes"<CR>
-vmap ,n :w! >> $NOTES \| echo "Selection written to notes"<CR>
+command! -nargs=1 -complete=file -range -bar
+    \ AppendToFile <line1>,<line2>w! >> <args>
+    \ | echo "Line or selection appended to file"
+" Append the line or selection to $NOTES
+map ,n :AppendToFile $NOTES<CR>
 
 " Format buffer or selection to fixed width (ie for email)
-command! -nargs=1 -range=% FixedWidth <line1>,<line2>!fmt -<f-args>
+command! -nargs=1 -range=% FixedWidth <line1>,<line2>!fmt -<args>
 map ,f :FixedWidth 78
 
 " view the diff/gitdiff between buffer and respective file on disk
 nmap ,d :w !diff -u % -<CR>
 nmap ,gd :!git diff % <CR>
 
-" Look up the current word or selection via 'dict'
-nmap ;d :!dict <C-r><C-w><CR>
-vmap ;d y:!dict '<C-r>"'<CR>
+" Look up the current word or selection via 'dict' via K
+set keywordprg=dict
+" nmap ;d :!dict <C-r><C-w><CR>
+" vmap ;d y:!dict '<C-r>"'<CR>
 
 " Make a backup of the file on disk
 nmap ,b :!cp -av % %.bak<CR>
@@ -280,6 +294,7 @@ map ,m :g//m''<Left><Left><Left><Left>
 nmap <silent> ;m :call NewMark()<CR>
 
 " Spelling 
+set spelllang=en,ru
 " Apply the first spelling correction
 nmap <leader>z 1z=
 nmap ZA :spellrepall<CR>
@@ -288,10 +303,10 @@ nmap ZA :spellrepall<CR>
 " vnoremap <C-c> "+y
 
 " TMUX buffer integration
-" Copy entire-line selection to tmux buffer. 
-vmap <C-c> :w !tmux load-buffer -<cr>
-" Cut text from selection to tmux buffer. Hit undo to return.
-vmap <C-x> :!tmux load-buffer -<cr>
+command! -range TmuxCopy silent <line1>,<line2>w !tmux load-buffer -
+command! -range TmuxCut silent <line1>,<line2>!tmux load-buffer -
+map <C-c> :TmuxCopy<cr>
+map <C-x> :TmuxCut<cr>
 " Paste from tmux buffer
 nmap <leader>p :r !tmux show-buffer<cr>
 nmap <leader>P :.-1r !tmux show-buffer<cr>
@@ -300,14 +315,19 @@ nmap <leader>P :.-1r !tmux show-buffer<cr>
 nnoremap ;U gUiw
 nnoremap ;u guiw
 " Switch case of the first letter of word
-nmap ;c gew~b
-imap ;c <ESC>gew~`^i<Right>
+nmap ;c gEw~b
+imap ;c <ESC>gEw~`^i
+" Uppercase first letter of word, lower-case rest
+" map ;c :silent! s/\w*\%#\w*/\u\L&/<CR><C-L>
 
 " Surround the current word or selected text with the argument character
 "   Exception - 'b' for '**' and 'q' for double quote
 " Note: <expr> mapping, per dynamic passage of pressed char and current mode
 noremap <expr> ;s '<cmd>call SurroundText("' . nr2char(getchar()) . '")<CR>'
 inoremap <expr> ;s '<cmd>normal ;s' . nr2char(getchar()) . '<CR>'
+
+" Delete the characters surrounding the position (ie (,{,[,<,',")
+nnoremap <expr> ;d ':normal vi' . nr2char(getchar()) . '<cr><esc>`<X`>x``'
 
 command! SwitchCurrentNextWord s/\v(<\k*%#\k*>)(\_.{-})(<\k+>)/\3\2\1/
 
@@ -320,8 +340,8 @@ map <silent> <expr> ,s '<cmd>call SwitchFieldsUntilTerm("' . nr2char(getchar()) 
 map <silent> <expr> ,S '<cmd>call SwitchFields("' . nr2char(getchar()) . '")<CR>``<Esc>'
 
 " Navigating with guides (<++>) - enter insert mode at next instance
-map ;<Tab> <Esc>/<++><CR>"_cf>
-inoremap ;<Tab> <Esc>:normal ;<Tab><CR>
+nmap ;<Tab> /<++><CR>"_ca>
+imap ;<Tab> <Esc>:normal ;<Tab><CR>a
 
 " Insert a plain text section divider
 nmap ,D O<Esc>10i=<Esc>a<Space><++><Space><Esc>10a=<Esc>0
@@ -357,7 +377,7 @@ au FileType picolisp setlocal expandtab tabstop=3 shiftwidth=3 autoindent nosmar
 au FileType perl setlocal include=''
 
 au BufNewFile,BufRead inspirations.dat setlocal makeprg=pyro\ %
-au BufNewFile,BufRead *.asy setlocal filetype=c makeprg=asy\ % autowrite
+au BufNewFile,BufRead *.asy setlocal ft=asy makeprg=asy\ % autowrite
 au BufNewFile,BufRead *.tex setlocal makeprg=pdflatex\ % autowrite
 au BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
 au BufNewFile,BufRead *.cir setlocal ft=spice
