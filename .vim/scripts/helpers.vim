@@ -80,14 +80,18 @@ endfunction
 " Renames the file and exchanges buffer accordingly
 function! RenameFile()
     let old_name = expand('%')
-    let new_name = input('New file name: ', expand('%'), 'file')
-    if new_name != '' && new_name != old_name
-        exec ':silent! !mv ' . old_name new_name
-        exec ':e ' . new_name
-        exec ':bd ' . old_name
-        redraw!
+    let new_name = input('New file name: ', old_name, 'file')
+    let old_alt_file = @#
+    if new_name == '' || new_name == old_name | return | endif
+    exec ':silent! !mv ' . old_name new_name
+    exec ':e ' . new_name
+    exec ':bd ' . old_name
+    redraw!
+    if old_alt_file != ''
+        let @# = old_alt_file
+    else
+        let @# = @%
     endif
-    let @# = @%
 endfunction
 
 command! -range=% RemoveTrailingSpaces <line1>,<line2>s/\s\+$//
