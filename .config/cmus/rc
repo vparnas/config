@@ -25,6 +25,8 @@ set shuffle=false
 set status_display_program=~/.config/cmus/cmus-status-display
 
 set format_current= %a - %l - %n. %t%= %y 
+# Note: %{albumduration} reports not current album length but the last one displayed on screen:
+# https://github.com/cmus/cmus/issues/884
 # %= (used once) indicates start of right align
 set format_statusline= %{status} %{?show_playback_position?%{position}%{?duration?/%{duration} }?%{?duration?%{duration} }}(%{albumduration}) %{?bpm>0?at %{bpm} BPM }%{?volume>=0?v:%{?lvolume!=rvolume?%{lvolume},%{rvolume} ?%{volume} }}%{?stream?buf: %{buffer} }%{?show_current_bitrate & bitrate>=0?%{bitrate} kbps } | %{?repeat_current?repeat current?%{?play_library?%{playlist_mode} from %{?play_sorted?sorted }library?playlist}} %=| %1{continue}%1{follow}%1{repeat}%1{shuffle}
 
