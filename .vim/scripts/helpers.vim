@@ -34,11 +34,18 @@ function! SurroundText(char)
     elseif (a:char == 'q')
         let [left, right] = ['"',  '"']
     endif
+    call SurroundText2(left, right)
+endfunction
+
+function! SurroundText2(left, right)
+    let old_paste = &paste
+    set paste " set paste mode to avoid incidental insert-mode abbreviations
     if (mode() =~ 'v')
-        execute "normal \<ESC>`>a" . right . "\<ESC>`<i" . left . "\<Esc>"
+        execute "normal \<ESC>`>a" . a:right . "\<C-c>`<i" . a:left . "\<C-c>"
     else
-        execute "normal gEwi" . left . "\<C-o>e\<right>" . right . "\<Esc>"
+        execute "normal gEwi" . a:left . "\<C-c>ea" . a:right . "\<C-c>"
     endif
+    if !old_paste | set nopaste | endif
 endfunction
 
 function! SwitchFields(delim)
@@ -66,7 +73,9 @@ function! AddTag(tagname)
         return
     endif
     let cmd = '!echo -e "' . tagname . '\t' . tagfile . '\t' . tagaddress . '" >> ' . $TAGS_GLOBAL
-    execute cmd
+    execute 'silent ' . cmd
+    redraw!
+    echo 'Tag added'
 endfunction
 
 function! ToggleTabLine()
