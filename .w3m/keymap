@@ -10,8 +10,10 @@
 
 # Marks {{{
 
-keymap C-@  MARK
+# The most important
 keymap m  MARK
+keymap .  NEXT_MARK
+keymap ,  PREV_MARK
 # Mark all search terms
 keymap \"   REG_MARK
 # Mark URL-like strings as anchors
@@ -19,8 +21,6 @@ keymap :    MARK_URL
 # Mark current word as URL
 keymap ";"  MARK_WORD
 keymap M-:  MARK_MID
-keymap .  NEXT_MARK
-keymap ,  PREV_MARK
 
 # }}}
 
@@ -36,6 +36,8 @@ keymap C-y  DOWN
 keymap M-,  LEFT
 # Scroll screen right
 keymap M-.  RIGHT
+
+# Movement across the page
 keymap h    MOVE_LEFT
 keymap C-p  MOVE_UP
 keymap k    MOVE_UP
@@ -47,6 +49,8 @@ keymap M->  SHIFT_RIGHT
 keymap W    PREV_WORD
 keymap b    PREV_WORD
 keymap w    NEXT_WORD
+
+# Various ways to to proceed page by page
 keymap =    NEXT_PAGE
 keymap +    NEXT_PAGE
 keymap C-d  NEXT_PAGE
@@ -55,23 +59,31 @@ keymap DOWN NEXT_PAGE
 keymap -    PREV_PAGE
 keymap C-u  PREV_PAGE
 keymap UP   PREV_PAGE
+
 keymap TAB  NEXT_LINK
 keymap M-TAB PREV_LINK
+
 # First link on page
 keymap [    LINK_BEGIN
 # Last link
 keymap ]    LINK_END
-keymap Z    CENTER_H
-keymap z    CENTER_V
+
 keymap C-a  LINE_BEGIN
 keymap 0    LINE_BEGIN
 keymap \^   LINE_BEGIN
 keymap $    LINE_END
+
+# Top of page
 keymap g    BEGIN
+# Bottom of page
 keymap G    END
+# Undo last movement/jump across the page
 keymap (    UNDO
+# Redo the same
 keymap )    REDO
 keymap M-g  GOTO_LINE
+keymap Z    CENTER_H
+keymap z    CENTER_V
 
 # }}}
 
@@ -80,6 +92,8 @@ keymap M-g  GOTO_LINE
 # Incremental search
 keymap C-r  ISEARCH_BACK
 keymap C-s  ISEARCH
+
+# Regular search
 keymap /    SEARCH
 keymap ?    SEARCH_BACK
 keymap N    SEARCH_PREV
@@ -93,8 +107,11 @@ keymap {        PREV_TAB
 keymap DEL      PREV_TAB
 keymap }        NEXT_TAB
 keymap \\       NEXT_TAB
+
+# Move tabs around
 keymap M-{      TAB_LEFT
 keymap M-}      TAB_RIGHT
+
 keymap C-q      CLOSE_TAB
 keymap C-w      CLOSE_TAB
 keymap C-t      NEW_TAB
@@ -107,10 +124,13 @@ keymap M-t      TAB_MENU
 # Open link in new tab
 keymap t    TAB_LINK
 keymap T    TAB_LINK
+
 keymap a    SAVE_LINK
+
 # Open current link in ext browser (application)
 keymap o    EXTERN_LINK
 keymap M-M  EXTERN_LINK
+
 # Display the link url
 keymap u    PEEK_LINK
 # menu of links
@@ -143,27 +163,35 @@ keymap U    GOTO
 keymap M-u  GOTO_RELATIVE
 # Open local file
 keymap V    LOAD
-# edit buffer in VIM (or editor)
+
+# edit buffer (the textual rendering, not the html source) in VIM (or editor)
 keymap M-e  EDIT_SCREEN
 # Edit source in VIM (or editor)
 keymap E    EDIT
+
 keymap |    PIPE_BUF
+
 # Save buffer
 keymap S    SAVE_SCREEN
-# Save html
+# Save html (source)
 keymap M-s  SAVE
+
 keymap C-l  REDRAW
+
+# Reload source URL
 keymap R    RELOAD
+
 # View source
 keymap v    VIEW
 
 # }}}
 
 # Image operations {{{
-
+# Hover over image placeholder to view externally
 keymap I    VIEW_IMAGE
+
 keymap M-I  SAVE_IMAGE
-# Peek at image URL
+# Peek at image URL while hovered over placeholder
 keymap i    PEEK_IMG
 
 # }}}
@@ -191,17 +219,20 @@ keymap M-+  INFO
 keymap D    DOWNLOAD_LIST
 # Toggle frames
 keymap F    FRAME
+# View the key mappings (with w3m descriptions), including the possible unassigned commands
 keymap H    HELP
 keymap M-m  MOUSE_TOGGLE
 keymap q    QUIT
 keymap Q    EXIT
 keymap r    VERSION
+
+# Optionally configurable menu (~/.w3m/menu)
 keymap M    MENU
 
 keymap M-a ADD_BOOKMARK
 # Bookmark page
 keymap M-b BOOKMARK
-# Run command
+# Run internal command
 keymap M-c COMMAND
 keymap M-k DEFINE_KEY
 # Invoke the external dictionary with input word
@@ -213,15 +244,21 @@ keymap M-W DICT_WORD_AT
 
 # Specific pages shortcuts. Also showcases macros via COMMAND {{{
 
+# Open search engine, proceed to and select the search box
 keymap M-/ COMMAND  "GOTO https://duckduckgo.com/lite/; NEXT_LINK; GOTO_LINK"
 keymap M-\" GOTO     http://wttr.in/?lang=fr&m
 # strip out extra 'pre-content' on CMS-rich or wordpress sites with id="content" tag
 #keymap  M-7        COMMAND "VIEW; PIPE_BUF \"sed -n '1,/<body/p; /id=\\\"content\\\"/,$p'\" VIEW"
-# Add bookmark in one stroke
+
+# Add URL to the first bookmark section in one stroke
 #keymap M-8 COMMAND "ADD_BOOKMARK; LINK_END; GOTO_LINK"
+
 keymap M-9 COMMAND "PIPE_BUF linkgrabber; BACK; REDRAW"
-# View these user-defined commands
+
+# Proceed straight to these user-defined commands in the help page
 keymap M-? COMMAND "HELP; SEARCH User-Defined; NEXT_PAGE; CENTER_V"
+
+# Pipe to an external table-to-csv converter, then edit the rendered buffer
 keymap M-T COMMAND "VIEW; PIPE_BUF tabletocsv; EDIT_SCREEN"
 
 # }}}
