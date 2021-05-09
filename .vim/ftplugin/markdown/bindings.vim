@@ -18,9 +18,6 @@ inoremap <buffer> ,4 ####<Space>
 " Code block
 inoremap <buffer> ,c ```<cr>```<cr><cr><esc>2kO
 " convert CSV data to markup table
-vmap <buffer> <buffer> ;t :!sed '1p; 1s/[^,]\+/:---:/g; s/,/ \| /g; s/^.*$/\| \0 \|/g'<cr>
+vmap <buffer> ;t :!sed '1p; 1s/[^,]\+/:---:/g; s/,/ \| /g; s/^.*$/\| \0 \|/g'<cr>
 " Open buffer or selection in an html preview. Requires 'lowdown' markdown converter.
-map <buffer> <buffer> ,M :w !lowdown -D html-skiphtml -D html-head-ids -e math \| w3m -T text/html<CR>
-
-" Insert a named anchor
-inoremap <buffer> ,A <a<Space>name=''></a><Esc>F'i
+map <buffer> ,M :w !lowdown -D html-skiphtml -D html-head-ids -e math \| w3m -T text/html<CR>
