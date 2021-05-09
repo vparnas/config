@@ -13,7 +13,6 @@ set backupdir+=.
 set backupdir-=~/
 set backupdir^=~/.vim/backup/
 set backupdir^=./.vim-backup/
-set backup
 
 " Save your swp files to a less annoying place than the current directory.
 " If you have .vim-swap in the current directory, it'll use that.
@@ -25,9 +24,6 @@ set directory=./.vim-swap//
 set directory+=~/.vim/swap//
 set directory+=~/tmp//
 set directory+=.
-
-" viminfo stores the the state of your previous editing session
-set viminfo+=n~/.vim/viminfo
 
 if exists("+undofile")
   " undofile - This allows you to use undos after exiting and restarting
@@ -42,7 +38,6 @@ if exists("+undofile")
   set undofile
 endif
 
-set undolevels=100
 "
 " [TODO] Can overwrite global backup/awap/undo options for specific paths as such:
 " au BufWritePre /tmp/* setlocal noundofile

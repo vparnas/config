@@ -7,14 +7,21 @@ set scrolloff=0     " Don't enforce any visible lines beyond cursor position
 set showbreak=↪     " better line wraps
 set autoindent      " new line indent is obtained from the previous line
 set history=50      " commands to store in search, command-line, input-line history
+set undolevels=50
 set noswapfile      " Only enable swapfile for certain buffers (in autocommands)
-set backupskip=*/tmp/*,~/.w3m/w3mtmp*,/dev/shm/*
-set viminfofile=~/.vim/viminfo
+
+" Backup file in the course of update, delete backup after
+" For backupskip patterns, no backups made entirely
+set nobackup
+set writebackup
+set backupskip=*/tmp/*,$TMPDIR/*,~/.w3m/w3mtmp*,/dev/shm/*
+
 " Only process the modeline from the first or last line of the file
 " Prevent the string 'ex:' (short for example) from interpretation as a modeline
 set modelines=1
 set backspace=indent,eol,start  " Insert-mode <BS> to work in traditional way
 
+set viminfofile=~/.vim/viminfo
 " Vim info (data saved upon exiting VIM or with :wv[iminfo]
 " ': Store marks for this # prev files
 " <: max lines for registers
@@ -103,6 +110,9 @@ let mapleader=" "
 " Habit to strike <c-b> as the tmux prefix (since changed)
 map <c-b> <Nop>
 
+" Easier and more traditional keystroke for saving a modified buffer
+nmap <c-s> :update<CR>
+
 " Y behaves copies from the cursor to EOL
 noremap Y y$
 
@@ -133,8 +143,7 @@ map <silent> a*  :<c-u>normal! F*vf*<cr>
 nunmap a*
 " Op mapping for everything from cursor to last character entered
 " Ex: 'dl(' will delete everything from cursor to the last '(' of line
-noremap <silent> <expr> l ':<c-u>normal! v$F' . nr2char(getchar()) . '<cr>'
-nunmap l
+omap <silent> <expr> l ':<c-u>normal! v$F' . nr2char(getchar()) . '<cr>'
 
 " Tag mappings 
 if empty($TAGS_GLOBAL)
@@ -248,6 +257,8 @@ map ,f :FixedWidth 78
 
 " view the diff/gitdiff between buffer and respective file on disk
 nmap ,d :w !diff -u % -<CR>
+
+" Git diff of the current file
 nmap ,gd :!git diff % <CR>
 
 " Look up the current word or selection via 'dict' via K
@@ -276,7 +287,7 @@ vnoremap S :s/\v/g<left><left>
 " vimgrep command template
 nnoremap <leader>s :vimgrep //g %<C-Left><C-Left><Right>
 " vimgrep template to search through all buffers and append to error list
-nnoremap <C-s> :silent bufdo vimgrepadd //g %<C-Left><C-Left><Right>
+nnoremap <leader>S :silent bufdo vimgrepadd //g %<C-Left><C-Left><Right>
 " search list (what is technically the 'error' list) shortcuts
 nnoremap ;n :cnext<CR>
 nnoremap ;p :cprev<CR>
@@ -316,7 +327,7 @@ nnoremap ;U gUiw
 nnoremap ;u guiw
 " Switch case of the first letter of word
 nmap ;c gEw~b
-imap ;c <ESC>gEw~`^i
+imap ;c <ESC>gEw~gi
 " Uppercase first letter of word, lower-case rest
 " map ;c :silent! s/\w*\%#\w*/\u\L&/<CR><C-L>
 
@@ -327,7 +338,7 @@ noremap <expr> ;s '<cmd>call SurroundText("' . nr2char(getchar()) . '")<CR>'
 inoremap <expr> ;s '<cmd>normal ;s' . nr2char(getchar()) . '<CR>'
 
 " Delete the characters surrounding the position (ie (,{,[,<,',")
-nnoremap <expr> ;d ':normal vi' . nr2char(getchar()) . '<cr><esc>`<X`>x``'
+nnoremap <silent> <expr> ;d ':normal vi' . nr2char(getchar()) . '<cr><esc>`<X`>x``'
 
 command! SwitchCurrentNextWord s/\v(<\k*%#\k*>)(\_.{-})(<\k+>)/\3\2\1/
 
