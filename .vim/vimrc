@@ -252,6 +252,8 @@ command! -nargs=1 -complete=file -range -bar
 map ,n :AppendToFile $NOTES<CR>
 
 " Format buffer or selection to fixed width (ie for email)
+" NOTE: easier to use gq/gw with textwidth set to > 0
+"       set formatoptions+=a (auto) for VIM to always keep the paragraph formatted!
 command! -nargs=1 -range=% FixedWidth <line1>,<line2>!fmt -<args>
 map ,f :FixedWidth 78
 
@@ -399,9 +401,9 @@ au BufNewFile,BufRead tags* setlocal filetype=tags tabstop=16 shiftwidth=16 noex
 au BufNewFile,BufRead *.csv setf csv
 au BufNewFile,BufRead */calendar/* setlocal tabstop=16 shiftwidth=16 noexpandtab
 au BufRead */tmp/jrnl-new* execute '1 !echo $JRNL_HEADER'
-au BufRead */tmp/mutt* set textwidth=72 
+au BufRead */tmp/*mutt* set textwidth=72 formatoptions+=a
 " Enable swapfile for these temporary buffers
-au BufRead */tmp/mutt*,*/tmp/jrnl*,~/.w3m/w3mtmp* setlocal swapfile
+au BufRead */tmp/*mutt*,*/tmp/jrnl*,~/.w3m/w3mtmp* setlocal swapfile
 " Don't save undo history upon exiting these buffers
 au BufNewFile,BufRead */tmp/*,~/.w3m/w3mtmp*,/dev/shm/* setlocal noundofile
 

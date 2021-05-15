@@ -43,7 +43,7 @@ function! SurroundText2(left, right)
     if (mode() =~ 'v')
         execute "normal \<ESC>`>a" . a:right . "\<C-c>`<i" . a:left . "\<C-c>"
     else
-        execute "normal gEwi" . a:left . "\<C-c>ea" . a:right . "\<C-c>"
+        execute "normal gEwi" . a:left . "\<C-c>ea" . a:right . "\<Right>\<C-c>"
     endif
     if !old_paste | set nopaste | endif
 endfunction
