@@ -74,7 +74,8 @@ keymap \^   LINE_BEGIN
 keymap $    LINE_END
 
 # Top of page
-keymap g    BEGIN
+keymap g    NULL
+keymap gg   BEGIN
 # Bottom of page
 keymap G    END
 # Undo last movement/jump across the page
@@ -106,7 +107,6 @@ keymap n    SEARCH_NEXT
 keymap {        PREV_TAB
 keymap DEL      PREV_TAB
 keymap }        NEXT_TAB
-keymap \\       NEXT_TAB
 
 # Move tabs around
 keymap M-{      TAB_LEFT
@@ -127,9 +127,24 @@ keymap T    TAB_LINK
 
 keymap a    SAVE_LINK
 
-# Open current link in ext browser (application)
+# Open current link in ext browser (application) defined in the config file
 keymap o    EXTERN_LINK
 keymap M-M  EXTERN_LINK
+
+# Custom EXTERN/EXTERN_LINK commands
+# https://github.com/gotbletu/shownotes/blob/master/w3m_extern_link.md
+
+# yank url to multiple clipboard
+keymap  yy EXTERN_LINK "url=%s ; printf "%b" "$url" | xsel -b ; printf "%b" "$url" | tmux load-buffer -"
+keymap  YY EXTERN "url=%s ; printf "%b" "$url" | xsel -b ; printf "%b" "$url" | tmux load-buffer -"
+
+# queue download, external media player (queued), etc
+keymap  xm EXTERN_LINK   "NQDIR=$XDG_CACHE_HOME/mpv_queue nq mpv --quiet --ontop --force-window --ytdl-format='bestvideo[height<=480]+bestaudio/best[height<=480]' --autofit=500x280 --geometry=-15-53 >/dev/null 2>&1"
+keymap  xd EXTERN_LINK   'NQDIR=$XDG_CACHE_HOME/w3m_queue nq wget -q -c -P ~/Downloads'
+
+# queue-monitoring
+keymap  xs SHELL         'watch NQDIR=$XDG_CACHE_HOME/w3m_queue fq -anq \| tail'
+keymap  xS SHELL         'watch NQDIR=$XDG_CACHE_HOME/mpv_queue fq -anq \| tail'
 
 # Display the link url
 keymap u    PEEK_LINK
@@ -137,7 +152,7 @@ keymap u    PEEK_LINK
 keymap M-l  LIST_MENU
 # Another link list
 keymap L    LIST
-# jump to link in page
+# jump to link in page (same as LIST_MENU?)
 keymap M-M  MOVE_LIST_MENU
 
 # }}}
@@ -163,6 +178,7 @@ keymap U    GOTO
 keymap M-u  GOTO_RELATIVE
 # Open local file
 keymap V    LOAD
+keymap :e   LOAD
 
 # edit buffer (the textual rendering, not the html source) in VIM (or editor)
 keymap M-e  EDIT_SCREEN
@@ -175,6 +191,7 @@ keymap |    PIPE_BUF
 keymap S    SAVE_SCREEN
 # Save html (source)
 keymap M-s  SAVE
+keymap :w   SAVE
 
 keymap C-l  REDRAW
 
@@ -222,8 +239,10 @@ keymap F    FRAME
 # View the key mappings (with w3m descriptions), including the possible unassigned commands
 keymap H    HELP
 keymap M-m  MOUSE_TOGGLE
+keymap ZZ   QUIT
 keymap q    QUIT
-keymap Q    EXIT
+keymap Q    NULL
+keymap ZQ   EXIT
 keymap r    VERSION
 
 # Optionally configurable menu (~/.w3m/menu)
@@ -233,6 +252,7 @@ keymap M-a ADD_BOOKMARK
 # Bookmark page
 keymap M-b BOOKMARK
 # Run internal command
+keymap :: COMMAND
 keymap M-c COMMAND
 keymap M-k DEFINE_KEY
 # Invoke the external dictionary with input word
@@ -242,24 +262,45 @@ keymap M-W DICT_WORD_AT
 
 # }}}
 
-# Specific pages shortcuts. Also showcases macros via COMMAND {{{
+# User-defined bindings {{{
+keymap  :c       SHELL "$EDITOR ~/.w3m/config"
+keymap  :k       SHELL "$EDITOR ~/.w3m/keymap"
+keymap  :u       SHELL "$EDITOR ~/.w3m/urimethodmap"
+# }}}
 
-# Open search engine, proceed to and select the search box
-keymap M-/ COMMAND  "GOTO https://duckduckgo.com/lite/; NEXT_LINK; GOTO_LINK"
-keymap M-\" GOTO     http://wttr.in/?lang=fr&m
+# Macros {{{
+
 # strip out extra 'pre-content' on CMS-rich or wordpress sites with id="content" tag
 #keymap  M-7        COMMAND "VIEW; PIPE_BUF \"sed -n '1,/<body/p; /id=\\\"content\\\"/,$p'\" VIEW"
 
-# Add URL to the first bookmark section in one stroke
-#keymap M-8 COMMAND "ADD_BOOKMARK; LINK_END; GOTO_LINK"
-
-keymap M-9 COMMAND "PIPE_BUF linkgrabber; BACK; REDRAW"
+# Thanks to gotbletu for revealing the possibility of consecutive-stroke combinations
+#   https://github.com/gotbletu/shownotes/blob/master/w3m_macros.md
 
 # Proceed straight to these user-defined commands in the help page
-keymap M-? COMMAND "HELP; SEARCH User-Defined; NEXT_PAGE; CENTER_V"
-
+keymap M-?  COMMAND "HELP; SEARCH ^User-Defined; NEXT_PAGE; CENTER_V"
+keymap \\\? COMMAND "HELP; SEARCH ^User-Defined; NEXT_PAGE; CENTER_V"
+# Treat URL strings as links
+keymap \\\u COMMAND "SET_OPTION mark_all_pages=toggle ; RELOAD"
+# Hinting mode for links: proceed with <link number> + [
+keymap \\\h COMMAND "SET_OPTION display_link_number=toggle ; RESHAPE"
+# Hinting mode for lines: proceed with <line number> + g
+keymap \\\l COMMAND "SET_OPTION show_lnum=toggle ; RESHAPE"
+keymap \\\b COMMAND "SET_OPTION display_borders=toggle ; RESHAPE"
+keymap \\\i COMMAND "SET_OPTION display_image=toggle ; RELOAD"
+keymap \\\e COMMAND "SET_OPTION user_agent='' ; RELOAD"
+keymap \\\A COMMAND "SET_OPTION user_agent='Opera/9.80 (S60; SymbOS; Opera Mobi/SYB-1107071606; U; en) Presto/2.8.149 Version/11.10' ; RELOAD"
+# Open search engine, proceed to and select the search box
+keymap M-/ COMMAND  "GOTO https://duckduckgo.com/lite/; NEXT_LINK; GOTO_LINK"
+keymap \\\s COMMAND "GOTO https://duckduckgo.com/lite/; NEXT_LINK; GOTO_LINK"
+keymap \\\g COMMAND "GOTO https://google.com; GOTO_LINE 6; NEXT_LINK; GOTO_LINK"
+keymap \\\w GOTO http://wttr.in/?lang=fr&m
 # Pipe to an external table-to-csv converter, then edit the rendered buffer
-keymap M-T COMMAND "VIEW; PIPE_BUF tabletocsv; EDIT_SCREEN"
+keymap \\\T COMMAND "VIEW; PIPE_BUF tabletocsv; EDIT_SCREEN"
+keymap \\\L COMMAND "PIPE_BUF linkgrabber; BACK; REDRAW"
+# Open add-bookmark dialogue, editing bookmark title
+keymap \\\b COMMAND "ADD_BOOKMARK; LINK_END; PREV_LINK; GOTO_LINK"
+# Pass the page through the readability (readability-cli) plugin
+keymap \\\r COMMAND "READ_SHELL 'readable $W3M_URL -p html-title,html-content > /tmp/readable.html' ; LOAD /tmp/readable.html; DELETE_PREVBUF"
 
 # }}}
 
