@@ -87,7 +87,8 @@ extbrowser4 url=%s && jrnl @link $url && echo $url saved to journal && read s
 extbrowser5 url=$(echo %s | sed 's/\\\|\//\\&/g') && sed -i "1,/End\sof\ssection/s/.*End\sof/<li><a href=$url>$url<\/a>\n&/g" ~/.w3m/bookmark.html && echo $url saved to bookmarks && read s
 extbrowser6 wget -c
 extbrowser7 url=%s && printf %s "$url" | xargs tmux set-buffer
-extbrowser8 url=%s && printf %s "$url" | xsel && printf %s "$url" | xsel -b &
+extbrowser8 bash -c 'echo -n "$0" | xclip -selection clipboard && notify-send -t 5000 -i edit-copy "W3M URL Yank To Clipboard" "$0"'
+#extbrowser8 url=%s && printf %s "$url" | xsel && printf %s "$url" | xsel -b &
 extbrowser9 mpv %s
 bgextviewer 1
 use_lessopen 0
