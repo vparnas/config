@@ -5,6 +5,7 @@ show-keymap-hint no
 auto-reload no
 notify-xterm yes
 bookmark-autopilot yes
+save-path ~/Downloads/
 
 # Three parameters appended to the below. 
 # > /dev/null to prevent a (benign) error from newsboat.
@@ -34,6 +35,7 @@ bind-key u pageup
 bind-key - pageup
 bind-key l open
 bind-key a toggle-article-read
+bind-key w toggle-source-view
 bind-key D pb-download
 bind-key U show-urls
 bind-key x pb-delete
@@ -54,7 +56,7 @@ macro y set browser "echo -n %u | xclip -selection clipboard"; open-in-browser ;
 macro C set browser "url=%u ; printf \"%b\" \"$url\" | xsel -b ; printf \"%b\" \"$url\" | tmux load-buffer -"; open-in-browser; set browser xdg-open
 macro n set browser "cat >> $NOTES <<<" ; open-in-browser ; set browser xdg-open
 # Queue in mpv (for YouTube)
-macro p set browser "NQDIR=$XDG_CACHE_HOME/mpv_queue nq mpv --quiet --ontop --force-window --ytdl-format='bestvideo[height<=480]+bestaudio/best[height<=480]' --autofit=500x280 --geometry=-15-53 %u >/dev/null 2>&1"; open-in-browser ; set browser xdg-open
+macro p set browser "NQDIR=$XDG_CACHE_HOME/mpv_queue nq mpv --quiet --ytdl-format='bestvideo[height<=480]+bestaudio/best[height<=480]' %u >/dev/null 2>&1"; open-in-browser ; set browser xdg-open
 
 #macro c set browser "xsel -b <<<" ; open-in-browser ; set browser xdg-open
 #macro a set browser "tsp youtube-dl --add-metadata -xic -f bestaudio/best"; open-in-browser ; set browser xdg-open

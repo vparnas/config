@@ -22,7 +22,7 @@ super + {a,r,s,y,n}
     }
 # Email client
 {super + e,XF86Mail}
-    $TERMINAL_PERSIST email mutt
+    $TERMINAL_PERSIST email neomutt
 # Screen key display toggle
 super + {shift + s,Scroll_Lock}
     killall screenkey || screenkey
@@ -52,6 +52,9 @@ super + shift + bracket{right,left}
 # Take screenshot
 Print
     scrot -e 'mv $f ~/screenshots/ 2>/dev/null'
+# Select what part of screen to capture via dmenu
+shift + Print
+    cd ~/screenshots && maimpick
 # Record audio or video
 super + Print
     dmenurecord
@@ -81,11 +84,15 @@ super + o
 
 {super + x,XF86ScreenSaver}
     slock
+
 # Open browser, optionally with the search engine page
+# Only w3m requires native xterm for image rendering
 {super + w,XF86HomePage}
-    $TERMINAL_PERSIST web w3m -B
-super + shift + {t,e}
-    exec-cmd jrnl_time_{start,end}
+    xterm -e tmux new-session -A -D -s web w3m -B
+    #$TERMINAL_PERSIST web w3m -B
+
+#super + shift + {t,e}
+#    exec-cmd jrnl_time_{start,end}
 # Display camera video feed
 super + shift + v
     mpv --profile=low-latency --untimed /dev/video0 # --untimed eliminates the latency
