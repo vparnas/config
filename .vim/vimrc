@@ -42,7 +42,7 @@ set shiftround      " round indent to multiple of 'shiftwidth'
 
 set startofline     " When moving to top/middle/bottom (H/M/L) cursor at col 1
 " set smartindent   " similar to above, but for C programs, or:
-" set cindent 
+" set cindent
 set wrap            " Line wrap
 set linebreak       " line breaks at words, not characters
 set breakindent
@@ -55,6 +55,8 @@ set laststatus=0    " Don't display status bar regardless of # of windows open
 set ruler           " Use the last line to display line/column number, etc
 set rulerformat=%15(%l/%L,%c%V%)
 set showtabline=1   " Show the tabline by default for >1 tabs
+set showmatch       " Show matching bracket when inserted
+set synmaxcol=300   " Don't try to highlight long lines
 
 set wildmenu        " enable ctrl-n and ctrl-p to scroll thru matches
 set wildmode=full
@@ -72,12 +74,13 @@ set listchars=tab:»\ ,trail:·,nbsp:·
 "map <C-m> :emenu <C-Z>
 
 set splitbelow splitright   " better splitting
+set noequalalways " Don't automatically resize windows upon split or close
 
 " Language related
-" Configure keymap, disable by default. 
+" Configure keymap, disable by default.
 " use <CTRL-6> or <CTRL-^> in insert/search/cmd mode to toggle
 set keymap=russian-yawerty
-set iminsert=0 
+set iminsert=0
 set imsearch=-1
 
 " Search related
@@ -145,7 +148,7 @@ nunmap a*
 " Ex: 'dl(' will delete everything from cursor to the last '(' of line
 omap <silent> <expr> l ':<c-u>normal! v$F' . nr2char(getchar()) . '<cr>'
 
-" Tag mappings 
+" Tag mappings
 if empty($TAGS_GLOBAL)
     let $TAGS_GLOBAL=$XDG_CONFIG_HOME . '/tags.global'
 endif
@@ -163,7 +166,7 @@ nmap ;tl :tlast<CR>
 nmap <F1> :bprevious<CR>
 nmap <F2> :bnext<CR>
 nmap <F3> :SwitchCurrentNextWord<CR>``<C-L>
-" List browse mode for navigating among indented lists similar to a 
+" List browse mode for navigating among indented lists similar to a
 " file manager navigating directory structure. Requires scripts/listbrowse.vim
 nmap <F4> :call ToggleListMode()<CR>
 " 'Compile' present document using makeprg
@@ -175,7 +178,7 @@ nmap <F7> :setlocal spelllang=en,ru
 " Toggle relative numbering
 nmap <F9> :setlocal relativenumber!<CR>
 
-" To avoid specific insert-mode abbreviation with mode enabled, 
+" To avoid specific insert-mode abbreviation with mode enabled,
 " type <C-V> right before <space> that would trigger the abbreviation.
 " note: expandtab gets disabled with paste mode on
 " nmap <F10> :echo "toggling abbreviations (and paste mode)" \| setlocal paste! \| setlocal expandtab <CR>
@@ -200,8 +203,8 @@ nnoremap <C-k> :m-2<CR>==
 vnoremap <C-j> :m'>+<CR>gv=gv
 vnoremap <C-k> :m-2<CR>gv=gv
 
-" Navigation related 
-" Jump to alternate (last) file in '#' register, also <C-^> 
+" Navigation related
+" Jump to alternate (last) file in '#' register, also <C-^>
 nmap <leader><space> :b#<cr>
 nmap <BS> :b#<cr>
 " List all buffers and offer selection or buffer operation by number/name
@@ -242,7 +245,7 @@ nnoremap <leader>- :call ToggleTabLine()<cr>
 " Pipe buffer content to the jrnl app
 map ,j :w !jrnl
 
-" Select a link for copy or open with an application 
+" Select a link for copy or open with an application
 map ,l :silent w !linkgrabber
 
 command! -nargs=1 -complete=file -range -bar
@@ -274,6 +277,23 @@ nmap ,b :!cp -av % %.bak<CR>
 " Email the buffer or selection via mutt
 map ,e :w !mutt <address>
 
+" TODO: revise the ,x* keystrokes
+" inspired by https://github.com/gotbletu/
+
+" Open link under cursor (ie YouTube) in MPV (see 'isfname' for link format)
+map ,xm :exec ":!NQDIR=$XDG_CACHE_HOME/mpv_queue nq mpv --quiet
+    \--ytdl-format='bestvideo[height<=480]+bestaudio/best[height<=480]' " .
+    \"<c-r><c-f>"<CR><CR>
+
+" Copy link under cursor to the tmux buffer
+map ,xl :!tmux set-buffer "<c-r><c-f>"<CR><CR>
+    \:echo 'link copied to Tmux buffer'<CR>
+
+" Copy buffer full file path to tmux buffer
+" map <leader>g :exec "echo '" . expand("%:~") . "'"<CR>
+map ,xg :!tmux set-buffer "<c-r>=expand("%:p:~")<CR>"<CR><CR>
+    \:echo 'buffer path copied to Tmux'<CR>
+
 " Convert list separated by any operator-entered deliniator to vertical, then auto-indent the new lines with '='
 map <expr> ,c ':s/\s*\' . nr2char(getchar()) . '\s*/\r/g \| normal V``j=<CR>'
 " Same as above, but fixed mapping for comma and semicolon delimeters
@@ -300,13 +320,13 @@ nnoremap ;P :silent colder<CR>
 nnoremap ;C :cexpr []<CR>
 " TODO: prepend vimgrep with :noautocmd for speedup
 
-" Move lines matching pattern to below current line 
+" Move lines matching pattern to below current line
 map ,m :g//m''<Left><Left><Left><Left>
 
 " Set the next unused lower-case mark, round-robin
 nmap <silent> ;m :call NewMark()<CR>
 
-" Spelling 
+" Spelling
 set spelllang=en,ru
 " Apply the first spelling correction
 nmap <leader>z 1z=
@@ -318,8 +338,9 @@ nmap ZA :spellrepall<CR>
 " TMUX buffer integration
 command! -range TmuxCopy silent <line1>,<line2>w !tmux load-buffer -
 command! -range TmuxCut silent <line1>,<line2>!tmux load-buffer -
-map <C-c> :TmuxCopy<cr>
-map <C-x> :TmuxCut<cr>
+" note: take caution if mapping below in normal mode
+vmap <C-c> :TmuxCopy<cr>
+vmap <C-x> :TmuxCut<cr>
 " Paste from tmux buffer
 nmap <leader>p :r !tmux show-buffer<cr>
 nmap <leader>P :.-1r !tmux show-buffer<cr>
@@ -369,6 +390,18 @@ nmap <leader>n :call RenameFile()<cr>
 " BIB: ~/.vim/ftplugin/bib.vim
 
 " }}}
+" IntelliSense Autocomplete {{{
+" https://importgeek.wordpress.com/2012/03/25/how-to-enable-autocomplete-in-vim-or-vim-intellisense/
+" Ctrl+N to complete code
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd FileType c set omnifunc=ccomplete#Complete
+"------------------------------------------------------
+"}}}
 
 " Autocommands {{{
 
@@ -377,7 +410,7 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 " Custom highlight group
 au Filetype * highlight MyHighlights ctermbg=DarkYellow guibg=DarkYellow guifg=Black ctermfg=Black
-au Filetype * match MyHighlights /TODO\|NOTE\|UPDATE/
+au Filetype * match MyHighlights /TODO\|NOTE\|UPDATE\|TBD/
 " Highlight characters beyond 80 in source code
 " NOTE: once enabled, persists for current window, regardless of file type
 au Filetype perl,c,sh,picolisp highlight rightMargin term=bold ctermfg=red guifg=red
@@ -401,7 +434,7 @@ au BufNewFile,BufRead tags* setlocal filetype=tags tabstop=16 shiftwidth=16 noex
 au BufNewFile,BufRead *.csv setf csv
 au BufNewFile,BufRead */calendar/* setlocal tabstop=16 shiftwidth=16 noexpandtab
 au BufRead */tmp/jrnl-new* execute '1 !echo $JRNL_HEADER'
-au BufRead */tmp/*mutt* set textwidth=72 formatoptions+=a
+au BufRead */tmp/*mutt* set textwidth=72
 " Enable swapfile for these temporary buffers
 au BufRead */tmp/*mutt*,*/tmp/jrnl*,~/.w3m/w3mtmp* setlocal swapfile
 " Don't save undo history upon exiting these buffers
@@ -415,6 +448,7 @@ au BufWritePost shorthand.txt silent !sed -r '/^(\#|\s*$)/d; s/\s*\#.*//; s/^(\S
 
 " Update binds when sxhkdrc is updated.
 au BufWritePost *sxhkdrc !pkill -USR1 sxhkd
+au BufWritePost ~/.Xresources !xrdb ~/.Xresources
 
 " Populate specific files/types with skeleton content
 augroup templates
