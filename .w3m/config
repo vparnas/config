@@ -26,7 +26,7 @@ display_image 0
 pseudo_inlines 1
 auto_image 1
 max_load_image 4
-ext_image_viewer 1
+ext_image_viewer 0
 image_scale 100
 imgdisplay w3mimgdisplay
 image_map_list 1
@@ -70,7 +70,7 @@ preserve_timestamp 1
 keymap_file keymap
 document_root 
 personal_document_root 
-cgi_bin 
+cgi_bin ~/.w3m/cgi-bin:/usr/lib/w3m/cgi-bin:/usr/local/libexec/w3m/cgi-bin
 index_file 
 mime_types ~/.w3m/mime.types, /etc/mime.types
 mailcap ~/.w3m/mailcap, /etc/w3m/mailcap, /etc/mailcap
@@ -85,7 +85,7 @@ extbrowser2 opera %s
 extbrowser3 url=%s out_file=$NOTES && echo $url >> $out_file && echo $url saved to $out_file && read s
 extbrowser4 url=%s && jrnl @link $url && echo $url saved to journal && read s
 extbrowser5 url=$(echo %s | sed 's/\\\|\//\\&/g') && sed -i "1,/End\sof\ssection/s/.*End\sof/<li><a href=$url>$url<\/a>\n&/g" ~/.w3m/bookmark.html && echo $url saved to bookmarks && read s
-extbrowser6 wget -c
+extbrowser6 lynx %s
 extbrowser7 url=%s && printf %s "$url" | xargs tmux set-buffer
 extbrowser8 bash -c 'echo -n "$0" | xclip -selection clipboard && notify-send -t 5000 -i edit-copy "W3M URL Yank To Clipboard" "$0"'
 #extbrowser8 url=%s && printf %s "$url" | xsel && printf %s "$url" | xsel -b &
