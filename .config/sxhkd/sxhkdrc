@@ -88,8 +88,8 @@ super + o
 # Open browser, optionally with the search engine page
 # Only w3m requires native xterm for image rendering
 {super + w,XF86HomePage}
-    xterm -e tmux new-session -A -D -s web w3m -B
-    #$TERMINAL_PERSIST web w3m -B
+    $TERMINAL_PERSIST web w3m -B
+    #xterm -e tmux new-session -A -D -s web w3m -B
 
 #super + shift + {t,e}
 #    exec-cmd jrnl_time_{start,end}

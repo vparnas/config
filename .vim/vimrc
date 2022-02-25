@@ -285,6 +285,9 @@ map ,xm :exec ":!NQDIR=$XDG_CACHE_HOME/mpv_queue nq mpv --quiet
     \--ytdl-format='bestvideo[height<=480]+bestaudio/best[height<=480]' " .
     \"<c-r><c-f>"<CR><CR>
 
+" Open link under cursor in xdg-open
+map ,xx :!xdg-open "<c-r><c-f>"<CR><CR>
+
 " Copy link under cursor to the tmux buffer
 map ,xl :!tmux set-buffer "<c-r><c-f>"<CR><CR>
     \:echo 'link copied to Tmux buffer'<CR>
@@ -309,7 +312,7 @@ vnoremap S :s/\v/g<left><left>
 " vimgrep command template
 nnoremap <leader>s :vimgrep //g %<C-Left><C-Left><Right>
 " vimgrep template to search through all buffers and append to error list
-nnoremap <leader>S :silent bufdo vimgrepadd //g %<C-Left><C-Left><Right>
+nnoremap <leader>S :silent! bufdo vimgrepadd //g %<C-Left><C-Left><Right>
 " search list (what is technically the 'error' list) shortcuts
 nnoremap ;n :cnext<CR>
 nnoremap ;p :cprev<CR>
@@ -338,12 +341,21 @@ nmap ZA :spellrepall<CR>
 " TMUX buffer integration
 command! -range TmuxCopy silent <line1>,<line2>w !tmux load-buffer -
 command! -range TmuxCut silent <line1>,<line2>!tmux load-buffer -
-" note: take caution if mapping below in normal mode
 vmap <C-c> :TmuxCopy<cr>
 vmap <C-x> :TmuxCut<cr>
 " Paste from tmux buffer
 nmap <leader>p :r !tmux show-buffer<cr>
 nmap <leader>P :.-1r !tmux show-buffer<cr>
+
+" Chat Mode TODO:better name{{{
+" Seamless cut/paste to another Tmux pane:
+"   the last pane in current Tmux window, if present, otherwise the last window
+"   Immediately reenters insert mode.
+" Enabled on demand for local buffer
+" Bound to the Enter normal-mode key
+command! ChatMode nmap <buffer> <cr> :.!tmux load-buffer -b pipe -<cr>
+    \:silent !tmux paste-buffer -b pipe -d -t \!<cr><c-l>I
+"}}}
 
 " Save a few keystrokes for capitalizing or lower-casing words
 nnoremap ;U gUiw
@@ -410,7 +422,7 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 " Custom highlight group
 au Filetype * highlight MyHighlights ctermbg=DarkYellow guibg=DarkYellow guifg=Black ctermfg=Black
-au Filetype * match MyHighlights /TODO\|NOTE\|UPDATE\|TBD/
+au Filetype * match MyHighlights /TODO\|NOTE\|UPDATE\|TBD\|IDEA/
 " Highlight characters beyond 80 in source code
 " NOTE: once enabled, persists for current window, regardless of file type
 au Filetype perl,c,sh,picolisp highlight rightMargin term=bold ctermfg=red guifg=red
@@ -428,7 +440,8 @@ au BufNewFile,BufRead *.tex setlocal makeprg=pdflatex\ % autowrite
 au BufNewFile,Bufread *.pde,*.ino setlocal ft=arduino
 au BufNewFile,BufRead *.cir setlocal ft=spice
 au BufNewFile,BufRead calcurse*,*calcurse/notes/* set filetype=markdown
-au BufNewFile,BufRead */tmp/jrnl*,*/journals/*.txt set filetype=markdown
+au BufNewFile,BufRead */tmp/jrnl* set filetype=markdown
+" au BufNewFile,BufRead */journals/*.txt set filetype=markdown
 au BufNewFile,BufRead */writing/poetry/[^.]* set filetype=markdown
 au BufNewFile,BufRead tags* setlocal filetype=tags tabstop=16 shiftwidth=16 noexpandtab
 au BufNewFile,BufRead *.csv setf csv

@@ -4,6 +4,9 @@ set mixer.pulse.restore_volume=1
 # Auto-continue to the next track in library/playlist/queue
 set continue=true
 
+# If false, handy for playback to stop after current album terminates, even within a queue!
+set continue_album=true
+
 # all, artist or album playback, when play_library=true 
 set aaa_mode=album
 
@@ -18,17 +21,21 @@ set repeat_current=false
 # Upon reload, resume where left off
 set resume=true
 
+# Don't automatically play anything after queue empties
+set stop_after_queue=true
+
 set show_current_bitrate=true
 set show_hidden=true
 set show_remaining_time=false
 set shuffle=false
 set status_display_program=~/.config/cmus/cmus-status-display
 
-set format_current= %a - %l - %n. %t%= %y 
+set format_current= %a - %l - %n. %t%= %y
 # Note: %{albumduration} reports not current album length but the last one displayed on screen:
 # https://github.com/cmus/cmus/issues/884
 # %= (used once) indicates start of right align
 set format_statusline= %{status} %{?show_playback_position?%{position}%{?duration?/%{duration} }?%{?duration?%{duration} }}(%{albumduration}) %{?bpm>0?at %{bpm} BPM }%{?volume>=0?v:%{?lvolume!=rvolume?%{lvolume},%{rvolume} ?%{volume} }}%{?stream?buf: %{buffer} }%{?show_current_bitrate & bitrate>=0?%{bitrate} kbps } | %{?repeat_current?repeat current?%{?play_library?%{playlist_mode} from %{?play_sorted?sorted }library?playlist}} %=| %1{continue}%1{follow}%1{repeat}%1{shuffle}
+set format_playlist= %-20%a %-15l %3n. %t%= %y %d %{?X!=0?%3X ?    }
 
 # Enqueue a random album
 bind -f common R lqueue
